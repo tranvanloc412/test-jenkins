@@ -25,20 +25,6 @@ def convertFileToList(file) {
     lines.split("\n").each {
         accounts.add(it.replaceAll("\\s","").split(",") as List)
     }
-    accounts.each {
-        println it
-    }
-    // def accounts = []
-    // lines.each {
-    //     accounts.add(it.replaceAll("\\s",""))
-    // }
-    // def tmp = []
-    // accounts.each {
-    //     tmp.add(it.split(",").trim() as List) 
-    // }
-    // tmp.each {
-    //     println it
-    // }
     return accounts
 }
 
@@ -72,6 +58,11 @@ pipeline {
             description: 'When to schedule patching. THIS IS IN GMT/UTC',
             trim: true
         )
+        string(
+            name: 'Accounts_File',
+            defaultValue: 'accounts.csv',
+            description: 'File contains list of patching accounts',
+        )
     }
 
     options {
@@ -80,43 +71,10 @@ pipeline {
     }
 
     stages {
-        stage('Preparation') {
-            steps{
-                script {
-                    // def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
-                    // fileContents = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
-                    // lines = fileContents.split("\n")
-                    // // println fileContents.getClass()
-                    // // def lines = fileContents.split('\n')
-                    // // println lines.getClass()
-                    // def accounts = []
-                    // lines.each {
-                    //     echo it
-                    //     println it.replaceAll("\\s","").split(",")
-                    //     accounts.add(it.replaceAll("\\s","").split(","))
-                    // }
-                    // println accounts
-                    // accounts.each {
-                    //     println it
-                    // }
-                    def accounts = convertFileToList('accounts.csv')
-                    // accounts.each {
-                    //     println it
-                    // }
-                    
-
-                }
-            }
-        }
-
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    def lzs = [
-                        [ 'lz1', 'a'],
-                        [ 'lz2', 'b'],
-                        [ 'lz3', 'b']
-                    ]
+                    def lzs = convertFileToList("${params.Accounts_File}")
                     lzs.each {
                         println it
                     }
@@ -127,7 +85,7 @@ pipeline {
                                                           "${params.AWS_Access_Token}",
                                                           lz.get(0),
                                                           lz.get(1),
-                                                          "${params.LZ_Schedule}"
+                                                          lz.get(2)
                                                       )
                     }
                     parallel parallelStagesMap
