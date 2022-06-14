@@ -29,7 +29,7 @@ def convertFileToList(file) {
     }
     def tmp = []
     accounts.each {
-        tmp.add(it.split(","))
+        tmp.add(it.split(",") as List) 
     }
     tmp.each {
         println it
