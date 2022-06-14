@@ -70,8 +70,7 @@ pipeline {
             steps{
                 script {
                     def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
-                        .replaceAll("(?m)^[ \t]*\r?\n", "")
-
+                    fileContents = fileContents.replaceAll("(?m)^[ \t]*\r?\n", "")
                     echo fileContents
                     println fileContents.getClass()
                     def lines = fileContents.split('\n')
