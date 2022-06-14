@@ -23,7 +23,8 @@ def convertFileToList(file) {
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     def accounts = []
     lines.split("\n").each {
-         accounts.add(it.replaceAll("\\s","").spilt(",")  as List)
+        def tmp = it.replaceAll("\\s","")
+        accounts.add(tmp.spilt(",") as List)
     }
     accounts.each {
         println it
