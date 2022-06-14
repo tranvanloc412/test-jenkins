@@ -48,10 +48,10 @@ pipeline {
             description: 'When to schedule patching. THIS IS IN GMT/UTC',
             trim: true
         )
-        file(
-            fileLocation: 'accounts.csv',
-            description: 'contains list of patching accounts'
-        )
+        // file(
+        //     fileLocation: 'accounts.csv',
+        //     description: 'contains list of patching accounts'
+        // )
     }
 
     options {
@@ -60,13 +60,18 @@ pipeline {
     }
 
     stages {
+        stage('Preparation') {
+            script {
+                String fileContents = new File('accounts.csv').getText('UTF-8')
+                echo fileContents
+        }
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
                     def lzs = [
                         [ 'lz1', 'a'],
                         [ 'lz2', 'b'],
-                        [ 'lz3', 'c']
+                        [ 'lz3', 'b']
                     ]
                     def parallelStagesMap = [:]
                     for (lz in lzs) {
