@@ -1,4 +1,4 @@
-def generateStage(awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
+def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     def params = [
       "AWS_Access_Key" : "${awsAccessKey}",
       "AWS_Secret_Key": "${awsSecretKey}",
@@ -13,10 +13,7 @@ def generateStage(awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName,
     }
     return {
         stage("Patching ${lzId}") {
-            def "job-${lzId}" = build job: "test/ReleaseJob", parameters: listParams, propagate: false
-        }
-        if("job-${lzId}".result != "SUCCESS") {
-            echo "Release status: FAILED"
+            build job: "${releaseJob}", parameters: listParams, propagate: false
         }
     }
 }
@@ -56,10 +53,9 @@ pipeline {
             trim: true
         )
         string(
-            name: 'LZ_Schedule',
-            defaultValue: '1970-01-01T00:01',
-            description: 'When to schedule patching. THIS IS IN GMT/UTC',
-            trim: true
+            name: 'Release_Job',
+            defaultValue: 'test/ReleaseJob',
+            description: 'Jenkins job to call',
         )
         string(
             name: 'Accounts_File',
@@ -83,7 +79,8 @@ pipeline {
                     }
                     def parallelStagesMap = [:]
                     for (lz in lzs) {
-                        parallelStagesMap[lz.get(0)] = generateStage("${params.AWS_Access_Key}",
+                        parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}"
+                                                          "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
                                                           "${params.AWS_Access_Token}",
                                                           lz.get(0),
