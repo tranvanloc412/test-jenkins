@@ -25,9 +25,11 @@ def convertFileToList(file) {
 
     def accounts = []
     lines.each {
-        accounts.add([it.replaceAll("\\s","").split(",")])
+        def tmp = it.replaceAll("\\s","").split(",")
+        println tmp
+        accounts.add(it.replaceAll("\\s","").split(","))
     }
-    
+
     return accounts
 }
 
