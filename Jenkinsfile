@@ -28,8 +28,10 @@ def convertFileToList(file) {
         def tmp = it.replaceAll("\\s","")
         def tmp1 = tmp.split(",")
         println tmp
+        println tmp1.getClass()
         tmp1.each {
             println it
+            println it.getClass()
         }
         accounts.add(it.replaceAll("\\s","").split(","))
     }
