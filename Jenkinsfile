@@ -27,7 +27,13 @@ def convertFileToList(file) {
     lines.each {
         accounts.add(it.replaceAll("\\s",""))
     }
-
+    def tmp = []
+    accounts.each {
+        tmp.add(it.split(","))
+    }
+    tmp.each {
+        println it
+    }
     return accounts
 }
 
@@ -89,9 +95,9 @@ pipeline {
                     //     println it
                     // }
                     def accounts = convertFileToList('accounts.csv')
-                    accounts.each {
-                        println it
-                    }
+                    // accounts.each {
+                    //     println it
+                    // }
                     
 
                 }
