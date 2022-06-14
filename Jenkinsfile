@@ -30,7 +30,7 @@ def convertFileToList(file) {
     lines.each {
         echo it
         println it.replaceAll("\\s","").split(",")
-        accounts.add(it.replaceAll("\\s","").split(","))
+        accounts.add([it.replaceAll("\\s","").split(",")])
     }
     return accounts
 }
