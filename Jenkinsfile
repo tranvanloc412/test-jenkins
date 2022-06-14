@@ -79,7 +79,7 @@ pipeline {
                     lines.split('\n').each {
                         echo it
                         println it.getClass()
-                        accounts.add(it.replace("\\s","").split(","))
+                        accounts.add(it.replacAll("\\s","").split(","))
                     }
                     accounts.each {
                         echo it
