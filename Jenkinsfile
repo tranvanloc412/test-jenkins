@@ -79,7 +79,7 @@ pipeline {
                     }
                     def parallelStagesMap = [:]
                     for (lz in lzs) {
-                        parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}"
+                        parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
                                                           "${params.AWS_Access_Token}",
