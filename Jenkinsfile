@@ -59,7 +59,7 @@ pipeline {
         )
         string(
             name: 'Accounts_File',
-            defaultValue: 'landinzones.csv',
+            defaultValue: 'landingzones.csv',
             description: 'File contains list of patching accounts',
         )
     }
