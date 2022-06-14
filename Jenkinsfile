@@ -12,10 +12,20 @@ def generateStage(awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName,
         listParams.add([$class: 'StringParameterValue', name: "${it.key}", value: "${it.value}"])
     }
     return {
-        stage("Patching on LZ: ${lzId}") {
+        stage("Patching on ${lzId}") {
             build job: "test/ReleaseJob", parameters: listParams, propagate: false
         }
     }
+}
+
+def convertFileToList(file) {
+    def fileContents = readFile "${env.WORKSPACE}/${file}"
+    def lines = fileContents.split('\n').grep{ r -> ! r.trim().isEmpty() }
+    def accounts = []
+    lines.each {
+        accounts.add(it.replaceAll("\\s","").split(","))
+    }
+    return accounts
 }
 
 pipeline {
@@ -48,10 +58,6 @@ pipeline {
             description: 'When to schedule patching. THIS IS IN GMT/UTC',
             trim: true
         )
-        // file(
-        //     fileLocation: 'accounts.csv',
-        //     description: 'contains list of patching accounts'
-        // )
     }
 
     options {
@@ -62,16 +68,13 @@ pipeline {
     stages {
         stage('Preparation') {
             steps{
-                sh 'ls'
-                sh 'echo ${WORKSPACE}'
                 script {
-                    // String fileContents = new File("${WORKSPACE}/accounts.csv").text
-                    def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
-                    println fileContents
-                    echo fileContents
+                    def accounts = convertFileToList('account.csv')
+                    echo accounts
                 }
             }
         }
+
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
