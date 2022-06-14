@@ -73,10 +73,11 @@ pipeline {
                     echo fileContents
                     println fileContents.getClass()
                     def lines = fileContents.split('\n')
-                    println lines
+                    println lines.getClass()
                     def accounts = []
                     lines.each {
-                        accounts.add(it.replace('\\s','').split(','))
+                        // accounts.add(it.replace('\\s','').split(','))
+                        echo it
                     }
                     echo accounts
                 }
