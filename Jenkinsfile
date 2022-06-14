@@ -72,7 +72,7 @@ pipeline {
                     def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
                     echo fileContents
                     println fileContents.getClass()
-                    def lines = fileContents.split('\n')
+                    def lines = fileContents.split('\n').grep{ r -> ! r.trim().isEmpty() }
                     println lines.getClass()
                     def accounts = []
                     lines.each {
