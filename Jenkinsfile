@@ -18,8 +18,8 @@ def generateStage(awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName,
     }
 }
 
-def convertFileToList(file) {
-    def fileContents = readFile "${env.WORKSPACE}/${file}"
+def convertFileToList(fileContent) {
+    // def fileContents = readFile "${env.WORKSPACE}/${file}"
     def lines = fileContents.split('\n').grep{ r -> ! r.trim().isEmpty() }
     def accounts = []
     lines.each {
@@ -69,7 +69,8 @@ pipeline {
         stage('Preparation') {
             steps{
                 script {
-                    def accounts = convertFileToList('account.csv')
+                    def fileContents = readFile "${env.WORKSPACE}/${file}"
+                    accounts = convertFileToList(fileContents)
                     echo accounts
                 }
             }
