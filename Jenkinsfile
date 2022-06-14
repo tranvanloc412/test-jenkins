@@ -65,7 +65,7 @@ pipeline {
                 sh 'ls'
                 sh 'echo ${WORKSPACE}'
                 script {
-                    String fileContents = new File("${WORKSPACE}/accounts.csv").getText('UTF-8')
+                    String fileContents = new File("${WORKSPACE}/accounts.csv").text
                     echo fileContents
                 }
             }
