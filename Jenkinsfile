@@ -14,9 +14,6 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 
     return {
         stage("Patching ${lzId}") {
-            // steps {
-            //     scripts
-            // }
             build job: "${releaseJob}", parameters: listParams, propagate: false
             println currentBuild.currentResult
         }
