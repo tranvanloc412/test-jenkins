@@ -18,11 +18,18 @@ def generateStage(awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName,
     }
 }
 
-def convertFileToList(fileContent) {
-    // def fileContents = readFile "${env.WORKSPACE}/${file}"
-    def lines = fileContents.split('\n').grep{ r -> ! r.trim().isEmpty() }
+def convertFileToList(file) {
+    def fileContents = readFile "${env.WORKSPACE}/${file}"
+    // def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
+    fileContents = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+    lines = fileContents.split("\n")
+    // println fileContents.getClass()
+    // def lines = fileContents.split('\n')
+    // println lines.getClass()
     def accounts = []
     lines.each {
+        echo it
+        println it.replaceAll("\\s","").split(",")
         accounts.add(it.replaceAll("\\s","").split(","))
     }
     return accounts
@@ -69,22 +76,27 @@ pipeline {
         stage('Preparation') {
             steps{
                 script {
-                    def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
-                    fileContents = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
-                    lines = fileContents.split("\n")
-                    // println fileContents.getClass()
-                    // def lines = fileContents.split('\n')
-                    // println lines.getClass()
-                    def accounts = []
-                    lines.each {
-                        echo it
-                        println it.replaceAll("\\s","").split(",")
-                        accounts.add(it.replaceAll("\\s","").split(","))
-                    }
-                    println accounts
+                    // def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
+                    // fileContents = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+                    // lines = fileContents.split("\n")
+                    // // println fileContents.getClass()
+                    // // def lines = fileContents.split('\n')
+                    // // println lines.getClass()
+                    // def accounts = []
+                    // lines.each {
+                    //     echo it
+                    //     println it.replaceAll("\\s","").split(",")
+                    //     accounts.add(it.replaceAll("\\s","").split(","))
+                    // }
+                    // println accounts
+                    // accounts.each {
+                    //     println it
+                    // }
+                    def accounts = convertFileToList('accounts.csv')
                     accounts.each {
                         println it
                     }
+
                 }
             }
         }
@@ -92,9 +104,6 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    accounts.each {
-                        println it
-                    }
                     def lzs = [
                         [ 'lz1', 'a'],
                         [ 'lz2', 'b'],
