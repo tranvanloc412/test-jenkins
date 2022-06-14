@@ -70,7 +70,11 @@ pipeline {
             steps{
                 script {
                     def fileContents = readFile "${env.WORKSPACE}/${file}"
-                    accounts = convertFileToList(fileContents)
+                    def lines = fileContents.split('\n').grep{ r -> ! r.trim().isEmpty() }
+                    def accounts = []
+                    lines.each {
+                        accounts.add(it.replaceAll("\\s","").split(","))
+                    }
                     echo accounts
                 }
             }
