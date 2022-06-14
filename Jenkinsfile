@@ -61,9 +61,11 @@ pipeline {
 
     stages {
         stage('Preparation') {
-            script {
-                String fileContents = new File('accounts.csv').getText('UTF-8')
-                echo fileContents
+            steps{
+                script {
+                    String fileContents = new File('accounts.csv').getText('UTF-8')
+                    echo fileContents
+                }
             }
         }
         stage('Execute patching on multiple landing zones') {
