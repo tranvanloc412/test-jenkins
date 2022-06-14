@@ -79,7 +79,7 @@ pipeline {
                         // accounts.add(it.replace('\\s','').split(','))
                         echo it
                     }
-                    echo accounts
+                    println accounts
                 }
             }
         }
