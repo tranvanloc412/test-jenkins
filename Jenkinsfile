@@ -20,9 +20,9 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     return {
         stage("Patching ${lzId}") {
            job
-           if(job.result != "SUCCESS") {
-                echo "Release status: ${job.result}"
-           }
+        //    if(job.result != "SUCCESS") {
+            echo "Release status: ${job.result}"
+        //    }
         }
     }
 }
