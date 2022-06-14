@@ -74,7 +74,7 @@ pipeline {
 
                     echo fileContents
                     println fileContents.getClass()
-                    def lines = fileContents.split('\n').grep{ r -> ! r.trim().isEmpty() }
+                    def lines = fileContents.split('\n')
                     println lines.getClass()
                     def accounts = []
                     lines.each {
