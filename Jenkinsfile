@@ -62,9 +62,10 @@ pipeline {
     stages {
         stage('Preparation') {
             steps{
+                sh 'ls'
+                sh 'echo ${WORKSPACE}'
                 script {
-                    ls
-                    String fileContents = new File('accounts.csv').getText('UTF-8')
+                    String fileContents = new File("${WORKSPACE}/accounts.csv").getText('UTF-8')
                     echo fileContents
                 }
             }
