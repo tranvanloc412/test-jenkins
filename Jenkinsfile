@@ -18,7 +18,7 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
             //     scripts
             // }
             build job: "${releaseJob}", parameters: listParams, propagate: false
-            println currentBuild.result
+            println currentBuild.currentResult
         }
     }
 }
