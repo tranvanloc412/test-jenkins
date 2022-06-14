@@ -70,16 +70,16 @@ pipeline {
             steps{
                 script {
                     def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
-                    fileContents = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
-                    echo fileContents
+                    lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+                    echo lines
                     // println fileContents.getClass()
                     // def lines = fileContents.split('\n')
                     // println lines.getClass()
                     def accounts = []
-                    fileContents.split('\n').each {
-                        // accounts.add(it.replace('\\s','').split(','))
+                    lines.split('\n').each {
                         echo it
                         println it.getClass()
+                        accounts.add(it.replace("\\s","").split(","))
                     }
                     println accounts
                 }
