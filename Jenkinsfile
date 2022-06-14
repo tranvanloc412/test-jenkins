@@ -63,6 +63,7 @@ pipeline {
         stage('Preparation') {
             steps{
                 script {
+                    ls
                     String fileContents = new File('accounts.csv').getText('UTF-8')
                     echo fileContents
                 }
