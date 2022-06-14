@@ -75,7 +75,7 @@ pipeline {
                     def lines = fileContents.split('\n').grep{ r -> ! r.trim().isEmpty() }
                     def accounts = []
                     lines.each {
-                        accounts.add(it.replaceAll("\\s","").split(","))
+                        accounts.add(it.replace('\\s','').split(','))
                     }
                     echo accounts
                 }
