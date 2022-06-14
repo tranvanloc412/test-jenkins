@@ -96,6 +96,7 @@ pipeline {
                     accounts.each {
                         println it
                     }
+                    
 
                 }
             }
@@ -109,6 +110,9 @@ pipeline {
                         [ 'lz2', 'b'],
                         [ 'lz3', 'b']
                     ]
+                    lzs.each {
+                        println it
+                    }
                     def parallelStagesMap = [:]
                     for (lz in lzs) {
                         parallelStagesMap[lz.get(0)] = generateStage("${params.AWS_Access_Key}",
