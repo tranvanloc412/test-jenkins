@@ -65,7 +65,9 @@ pipeline {
                 sh 'ls'
                 sh 'echo ${WORKSPACE}'
                 script {
-                    String fileContents = new File("${WORKSPACE}/accounts.csv").text
+                    // String fileContents = new File("${WORKSPACE}/accounts.csv").text
+                    def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
+                    println fileContents
                     echo fileContents
                 }
             }
