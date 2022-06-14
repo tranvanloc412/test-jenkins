@@ -12,8 +12,11 @@ def generateStage(awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName,
         listParams.add([$class: 'StringParameterValue', name: "${it.key}", value: "${it.value}"])
     }
     return {
-        stage("Patching on ${lzId}") {
-            build job: "test/ReleaseJob", parameters: listParams, propagate: false
+        stage("Patching ${lzId}") {
+            def "job-${lzId}" = build job: "test/ReleaseJob", parameters: listParams, propagate: false
+        }
+        if("job-${lzId}".result != "SUCCESS") {
+            echo "Release status: FAILED"
         }
     }
 }
