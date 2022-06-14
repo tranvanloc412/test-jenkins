@@ -83,7 +83,7 @@ pipeline {
                     }
                     println accounts
                     accounts.each {
-                        echo it
+                        println it
                     }
                 }
             }
