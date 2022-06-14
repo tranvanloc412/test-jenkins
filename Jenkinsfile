@@ -20,18 +20,14 @@ def generateStage(awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName,
 
 def convertFileToList(file) {
     def fileContents = readFile "${env.WORKSPACE}/${file}"
-    // def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
     fileContents = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     lines = fileContents.split("\n")
-    // println fileContents.getClass()
-    // def lines = fileContents.split('\n')
-    // println lines.getClass()
+
     def accounts = []
     lines.each {
-        echo it
-        println it.replaceAll("\\s","").split(",")
         accounts.add([it.replaceAll("\\s","").split(",")])
     }
+    
     return accounts
 }
 
