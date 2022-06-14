@@ -78,6 +78,7 @@ pipeline {
                     lines.each {
                         // accounts.add(it.replace('\\s','').split(','))
                         echo it
+                        println it.getClass()
                     }
                     println accounts
                 }
