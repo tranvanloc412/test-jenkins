@@ -69,7 +69,7 @@ pipeline {
         stage('Preparation') {
             steps{
                 script {
-                    def fileContents = readFile "${env.WORKSPACE}/account.csv"
+                    def fileContents = readFile "${env.WORKSPACE}/accounts.csv"
                     echo fileContents
                     def lines = fileContents.split('\n').grep{ r -> ! r.trim().isEmpty() }
                     def accounts = []
