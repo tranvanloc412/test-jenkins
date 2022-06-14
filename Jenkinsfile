@@ -78,7 +78,7 @@ pipeline {
                     def accounts = []
                     lines.each {
                         echo it
-                        println it.getClass()
+                        println it.replaceAll("\\s","")
                         accounts.add(it.replaceAll("\\s","").split(","))
                     }
                     accounts.each {
