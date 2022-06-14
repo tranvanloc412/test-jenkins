@@ -81,7 +81,9 @@ pipeline {
                         println it.getClass()
                         accounts.add(it.replace("\\s","").split(","))
                     }
-                    println accounts
+                    accounts.each {
+                        echo it
+                    }
                 }
             }
         }
