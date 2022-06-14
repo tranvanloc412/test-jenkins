@@ -81,6 +81,7 @@ pipeline {
                         println it.replaceAll("\\s","")
                         accounts.add(it.replaceAll("\\s","").split(","))
                     }
+                    println accounts
                     accounts.each {
                         echo it
                     }
