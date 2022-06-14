@@ -92,6 +92,9 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
+                    accounts.each {
+                        println it
+                    }
                     def lzs = [
                         [ 'lz1', 'a'],
                         [ 'lz2', 'b'],
