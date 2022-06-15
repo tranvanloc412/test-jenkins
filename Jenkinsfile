@@ -40,6 +40,7 @@ def getTestLzsInfo(file, chosenLzs = []) {
     if(!chosenLzs.isEmpty()) {
         println "1"
         lines.split("\n").each {
+            println it
             if (chosenLzs.contains(it)) {
                 println "2"
                 accounts.add(it.replaceAll("\\s","").split(",") as List)
