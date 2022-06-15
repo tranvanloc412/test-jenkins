@@ -144,7 +144,6 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    echo  "${params.LANDINGZONES}"
                     List lzs = []
                     switch("${params.ENVIRONMENT}") {
                         case "nonprod":
@@ -156,13 +155,14 @@ pipeline {
                             break
                         case "test":
                             List chosenLzs = convertStringToList("${params.LANDINGZONES}")
-                            println chosenLzs
-                            lz = getTestLzsInfo("test_lzs.csv", chosenLzs)
+                            // println chosenLzs
+                            lzs = getTestLzsInfo("test_lzs.csv", chosenLzs)
                             break
                         default:
                             lzs = []
                             break
                     }
+
                     lzs.each {
                         println it
                     }
