@@ -34,7 +34,7 @@ def convertStringToList(string) {
     return Arrays.asList(string.split("\\s*,\\s*"))
 }
 
-def populateChoice(choices) {
+def populateChoices(choices) {
   return '''
 if (ENVIRONMENT == ('test')) { 
     return $choices
@@ -50,7 +50,7 @@ else {
 
 def Test = ["\"aaa\"","\"bbb\"","\"fff\"","\"eee\""]
 String environments = 'test\nnonprod\nprod'
-String choices = populateItems(Test)
+String choices = populateChoices(Test)
 
 properties([
     parameters([
