@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
-    def params = [
+    List params = [
       "AWS_Access_Key" : "${awsAccessKey}",
       "AWS_Secret_Key": "${awsSecretKey}",
       "AWS_Access_Token": "${awsAccessToken}",
@@ -9,7 +9,7 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
       "LZ_SHORTNAME": "${lzShortName}",
       "LZ_Schedule": "${lzSchedule}"
     ]
-    def listParams = []
+    List listParams = []
     params.each {
         listParams.add([$class: 'StringParameterValue', name: "${it.key}", value: "${it.value}"])
     }
@@ -23,12 +23,19 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 }
 
 def convertFileToList(file, conditions = []) {
-    def fileContents = readFile "${env.WORKSPACE}/${file}"
+    String fileContents = readFile "${env.WORKSPACE}/${file}"
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     def accounts = []
-    // if()
-    lines.split("\n").each {
-        accounts.add(it.replaceAll("\\s","").split(",") as List)
+    if(conditions.isEmpty()) {
+        lines.split("\n").each {
+            accounts.add(it.replaceAll("\\s","").split(",") as List)
+        }
+    } else {
+        lines.split("\n").each {
+            if (conditions.contains(it)) {
+                accounts.add(it.replaceAll("\\s","").split(",") as List)
+            }
+        }
     }
     return accounts
 }
@@ -37,10 +44,10 @@ def convertStringToList(string) {
     return Arrays.asList(string.split("\\s*,\\s*"))
 }
 
-def populateChoices(choices) {
+def populateChoices(testLzs) {
   return """
 if (ENVIRONMENT == ('test')) { 
-    return $choices
+    return $testLzs
 }
 else if (ENVIRONMENT == ('nonprod')) {
     return ['nonprod_lzs.csv']
@@ -51,11 +58,9 @@ else {
 """.stripIndent()
 }
 
-def testlzs = convertFileToList("nonprod_lzs.csv")
-println testlzs
-def Test = ["\"aaa\"","\"bbb\"","\"fff\"","\"eee\""]
+List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String environments = "test\nnonprod\nprod"
-String choices = populateChoices(Test)
+String choices = populateChoices(testLzs)
 
 properties([
     parameters([
@@ -83,6 +88,7 @@ properties([
         ]
     ])
 ])
+
 pipeline {
     agent {
         label 'tooling'
@@ -130,7 +136,7 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    def lzs = []
+                    List lzs = []
                     switch("${params.ENVIRONMENT}") {
                         case "nonprod":
                             lzs = convertFileToList("nonprod_lzs.csv")
