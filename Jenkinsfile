@@ -104,7 +104,7 @@ pipeline {
                 script {
                     def lzs = []
                     if ("${params.ENVIRONMENT}" == "nonprod") {
-                        def lzs = convertFileToList("nonprod_lzs.csv")
+                        lzs = convertFileToList("nonprod_lzs.csv")
                         lzs.each {
                             println it
                         }
