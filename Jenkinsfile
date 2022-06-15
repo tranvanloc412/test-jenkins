@@ -22,10 +22,11 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     }
 }
 
-def convertFileToList(file) {
+def convertFileToList(file, conditions = []) {
     def fileContents = readFile "${env.WORKSPACE}/${file}"
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     def accounts = []
+    // if()
     lines.split("\n").each {
         accounts.add(it.replaceAll("\\s","").split(",") as List)
     }
@@ -50,6 +51,8 @@ else {
 """.stripIndent()
 }
 
+def testlzs = convertFileToList("nonprod_lzs.csv")
+println testlzs
 def Test = ["\"aaa\"","\"bbb\"","\"fff\"","\"eee\""]
 String environments = "test\nnonprod\nprod"
 String choices = populateChoices(Test)
@@ -109,11 +112,6 @@ pipeline {
             defaultValue: 'test/ReleaseJob',
             description: 'Jenkins job to call',
         )
-        // string(
-        //     name: 'Accounts_File',
-        //     defaultValue: 'landingzones.csv',
-        //     description: 'File contains list of patching accounts',
-        // )
         string(
             name: 'LZ_Schedule',
             defaultValue: '1970-01-01T00:01',
@@ -147,12 +145,6 @@ pipeline {
                             lzs = []
                             break
                     }
-                    // if ("${params.ENVIRONMENT}" == "nonprod") {
-                    //     lzs = convertFileToList("nonprod_lzs.csv")
-                    //     lzs.each {
-                    //         println it
-                    //     }
-                    // }
                     lzs.each {
                         println it
                     }
