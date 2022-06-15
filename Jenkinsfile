@@ -37,7 +37,7 @@ def convertStringToList(string) {
 def populateChoices(choices) {
   return '''
 if (ENVIRONMENT == ("test")) { 
-    return ${choices}
+    return choices
 }
 else if (ENVIRONMENT == ("nonprod")) {
     return ["nonprod_lzs.csv"]
