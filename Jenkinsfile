@@ -157,7 +157,7 @@ pipeline {
                             break
                         case "test":
                             List chosenLzs = convertStringToList("${params.LANDINGZONES}")
-                            // println chosenLzs
+                            println chosenLzs
                             lzs = getTestLzsInfo("test_lzs.csv", chosenLzs)
                             break
                         default:
