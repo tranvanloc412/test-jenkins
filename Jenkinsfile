@@ -1,5 +1,13 @@
 #!/usr/bin/env groovy
 
+class envs {
+  final String NONPROD = "nonprod"
+  final String PROD = "prod"
+  final String TEST = "test"
+}
+List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
+String nonprodLzs = "nonprod_lzs.csv"
+
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     List params = [
       "AWS_Access_Key" : "${awsAccessKey}",
@@ -17,7 +25,7 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     return {
         stage("${lzShortName}") {
             build job: "${releaseJob}", parameters: listParams, propagate: false
-            println currentBuild.currentResult
+            // println currentBuild.currentResult
         }
     }
 }
@@ -67,7 +75,7 @@ else {
 """.stripIndent()
 }
 
-List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
+
 String environments = "test\nnonprod\nprod"
 String choices = populateChoices(testLzs)
 
@@ -146,20 +154,19 @@ pipeline {
             steps {
                 script {
                     List lzs = []
-                    switch("${params.ENVIRONMENT}") {
-                        case "nonprod":
-                            def tmp = "${params.LANDINGZONES}"?.trim()
-                            println "${params.LANDINGZONES}"
-                            println tmp
-                            if(!"${params.LANDINGZONES}"?.trim()) {
+                    List chosenEnv = "${params.ENVIRONMENT}"
+                    String chosenLzsStr = "${params.LANDINGZONES}"
+                    switch(chosenEnv) {
+                        case envs.NONPROD:
+                            if(chosenLzs != "") {
                                 lzs = getLzsInfo("nonprod_lzs.csv")
                             }
                             break
-                        case "prod":
+                        case envs.PROD:
                             lzs = []
                             break
-                        case "test":
-                            List chosenLzs = convertStringToList("${params.LANDINGZONES}")
+                        case envs.TEST:
+                            List chosenLzs = convertStringToList(chosenLzsStr)
                             // println chosenLzs
                             lzs = getTestLzsInfo("test_lzs.csv", chosenLzs)
                             break
