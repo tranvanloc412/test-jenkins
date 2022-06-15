@@ -39,10 +39,7 @@ def getTestLzsInfo(file, chosenLzs = []) {
     List accounts = []
     if(!chosenLzs.isEmpty()) {
         lines.split("\n").each {
-            // println it
-            // println it.getClass()
             List tmp = it.replaceAll("\\s","").split(",")
-            // println tmp
             if (chosenLzs.contains(tmp.get(0))) {
                 accounts.add(tmp)
             }
@@ -151,8 +148,9 @@ pipeline {
                     List lzs = []
                     switch("${params.ENVIRONMENT}") {
                         case "nonprod":
-                            // println "${params.LANDINGZONES}"
-                            lzs = getLzsInfo("nonprod_lzs.csv")
+                            if(!"${params.LANDINGZONES}".trim()) {
+                                lzs = getLzsInfo("nonprod_lzs.csv")
+                            }
                             break
                         case "prod":
                             lzs = []
