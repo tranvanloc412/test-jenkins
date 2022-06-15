@@ -48,8 +48,30 @@ else {
 '''.stripIndent()
 }
 
+def Test = ["\"aaa\"","\"bbb\"","\"fff\"","\"eee\""]
 String environments = 'test\nnonprod\nprod'
+String choices = populateItems(Test)
 
+properties([
+    parameters([
+        [
+            $class: 'CascadeChoiceParameter', 
+            choiceType: 'PT_MULTI_SELECT',
+            description: 'Select Landing Zones to patch',
+            filterLength: 10,
+            filterable: true,
+            name: 'LANDINGZONES',
+            referencedParameters: 'ENVIRONMENT',
+            script: [$class: 'GroovyScript',
+                script: [
+                    classpath: [], 
+                    sandbox: true, 
+                    script: choices
+                ]
+            ]
+        ]
+    ])
+])
 pipeline {
     agent {
         label 'tooling'
