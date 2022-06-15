@@ -38,14 +38,12 @@ def getTestLzsInfo(file, chosenLzs = []) {
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     List accounts = []
     if(!chosenLzs.isEmpty()) {
-        println "1"
         lines.split("\n").each {
-            println it
-            println it.getClass()
+            // println it
+            // println it.getClass()
             List tmp = it.replaceAll("\\s","").split(",")
-            println tmp
+            // println tmp
             if (chosenLzs.contains(tmp.get(0))) {
-                println "2"
                 accounts.add(tmp)
             }
         }
@@ -161,7 +159,7 @@ pipeline {
                             break
                         case "test":
                             List chosenLzs = convertStringToList("${params.LANDINGZONES}")
-                            println chosenLzs
+                            // println chosenLzs
                             lzs = getTestLzsInfo("test_lzs.csv", chosenLzs)
                             break
                         default:
