@@ -30,7 +30,7 @@ def convertFileToList(file) {
     return accounts
 }
 
-def nonprodLzs = convertFileToList('nonprod_lzs')
+def nonprodLzs = convertFileToList('nonprod_lzs.csv')
 
 nonprodLzs.each {
     println it
