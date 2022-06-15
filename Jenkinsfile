@@ -15,18 +15,18 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     }
 
     return {
-        stage("Patching ${lzId}") {
+        stage("${lzShortName}") {
             build job: "${releaseJob}", parameters: listParams, propagate: false
             println currentBuild.currentResult
         }
     }
 }
 
-def convertFileToList(file, conditions = []) {
+def getLzsInfo(file, chosenLzs = []) {
     String fileContents = readFile "${env.WORKSPACE}/${file}"
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
-    def accounts = []
-    if(conditions.isEmpty()) {
+    List accounts = []
+    if(chosenLzs.isEmpty()) {
         lines.split("\n").each {
             accounts.add(it.replaceAll("\\s","").split(",") as List)
         }
@@ -139,13 +139,15 @@ pipeline {
                     List lzs = []
                     switch("${params.ENVIRONMENT}") {
                         case "nonprod":
-                            lzs = convertFileToList("nonprod_lzs.csv")
+                            println "${params.LANDINGZONES}"
+                            lzs = getLzsInfo("nonprod_lzs.csv")
                             break
                         case "prod":
                             lzs = []
                             break
                         case "test":
-                            lzs = convertStringToList("${params.LANDINGZONES}")
+                            List chosenLzs = convertStringToList("${params.LANDINGZONES}")
+                            lz = getLzsInfo("test_lzs.csv", chosenLzs)
                             break
                         default:
                             lzs = []
