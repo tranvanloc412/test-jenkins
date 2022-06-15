@@ -146,6 +146,7 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
+                    echo  "${params.LANDINGZONES}"
                     List lzs = []
                     switch("${params.ENVIRONMENT}") {
                         case "nonprod":
