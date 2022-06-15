@@ -148,7 +148,9 @@ pipeline {
                     List lzs = []
                     switch("${params.ENVIRONMENT}") {
                         case "nonprod":
+                            def tmp = "${params.LANDINGZONES}"?.trim()
                             println "${params.LANDINGZONES}"
+                            println tmp
                             if(!"${params.LANDINGZONES}"?.trim()) {
                                 lzs = getLzsInfo("nonprod_lzs.csv")
                             }
