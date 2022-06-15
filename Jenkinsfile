@@ -149,7 +149,7 @@ pipeline {
                     List lzs = []
                     switch("${params.ENVIRONMENT}") {
                         case "nonprod":
-                            println "${params.LANDINGZONES}"
+                            // println "${params.LANDINGZONES}"
                             lzs = getLzsInfo("nonprod_lzs.csv")
                             break
                         case "prod":
