@@ -1,3 +1,5 @@
+#!/usr/bin/env groovy
+
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     def params = [
       "AWS_Access_Key" : "${awsAccessKey}",
@@ -131,25 +133,42 @@ pipeline {
             steps {
                 script {
                     def lzs = []
-                    if ("${params.ENVIRONMENT}" == "nonprod") {
-                        lzs = convertFileToList("nonprod_lzs.csv")
-                        lzs.each {
-                            println it
-                        }
+                    switch("${params.ENVIRONMENT}") {
+                        case "nonprod":
+                            lzs = convertFileToList("nonprod_lzs.csv")
+                            break
+                        case "prod":
+                            lzs = []
+                            break
+                        case "test":
+                            lzs = convertStringToList("${params.LANDINGZONES}")
+                            break
+                        default:
+                            lzs = []
+                            break
+                    }
+                    // if ("${params.ENVIRONMENT}" == "nonprod") {
+                    //     lzs = convertFileToList("nonprod_lzs.csv")
+                    //     lzs.each {
+                    //         println it
+                    //     }
+                    // }
+                    lzs.each {
+                        println it
                     }
                    
-                    def parallelStagesMap = [:]
-                    for (lz in lzs) {
-                        parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
-                                                          "${params.AWS_Access_Key}",
-                                                          "${params.AWS_Secret_Key}",
-                                                          "${params.AWS_Access_Token}",
-                                                          lz.get(0),
-                                                          lz.get(1),
-                                                          "${params.LZ_Schedule}"
-                                                      )
-                    }
-                    parallel parallelStagesMap
+                    // def parallelStagesMap = [:]
+                    // for (lz in lzs) {
+                    //     parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
+                    //                                       "${params.AWS_Access_Key}",
+                    //                                       "${params.AWS_Secret_Key}",
+                    //                                       "${params.AWS_Access_Token}",
+                    //                                       lz.get(0),
+                    //                                       lz.get(1),
+                    //                                       "${params.LZ_Schedule}"
+                    //                                   )
+                    // }
+                    // parallel parallelStagesMap
                 }
             }
         }
