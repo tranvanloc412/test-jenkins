@@ -1,10 +1,3 @@
-def nonprodLzs = convertFileToList('nonprod_lzs')
-
-
-nonprodLzs.each {
-    println it
-}
-
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     def params = [
       "AWS_Access_Key" : "${awsAccessKey}",
@@ -35,6 +28,12 @@ def convertFileToList(file) {
         accounts.add(it.replaceAll("\\s","").split(",") as List)
     }
     return accounts
+}
+
+def nonprodLzs = convertFileToList('nonprod_lzs')
+
+nonprodLzs.each {
+    println it
 }
 
 pipeline {
