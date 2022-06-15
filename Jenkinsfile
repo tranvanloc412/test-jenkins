@@ -36,20 +36,20 @@ def convertStringToList(string) {
 
 def populateChoices(choices) {
   return '''
-if (ENVIRONMENT == ('test')) { 
+if (ENVIRONMENT == ("test")) { 
     return $choices
 }
-else if (ENVIRONMENT == ('nonprod')) {
+else if (ENVIRONMENT == ("nonprod")) {
     return ["nonprod_lzs.csv"]
 }
 else {
-    return ["ERROR]
+    return ["ERROR"]
 }
 '''.stripIndent()
 }
 
 def Test = ["\"aaa\"","\"bbb\"","\"fff\"","\"eee\""]
-String environments = 'test\nnonprod\nprod'
+String environments = "test\nnonprod\nprod"
 String choices = populateChoices(Test)
 
 properties([
