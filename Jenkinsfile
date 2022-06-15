@@ -30,11 +30,25 @@ def convertFileToList(file) {
     return accounts
 }
 
-def nonprodLzs = convertFileToList('nonprod_lzs.csv')
-
-nonprodLzs.each {
-    println it
+def convertStringToList(string) {
+    return Arrays.asList(string.split("\\s*,\\s*"))
 }
+
+def populateChoice(choices) {
+  return '''
+if (ENVIRONMENT == ('test')) { 
+    return $choices
+}
+else if (ENVIRONMENT == ('nonprod')) {
+    return ["nonprod_lzs.csv"]
+}
+else {
+    return ["ERROR]
+}
+'''.stripIndent()
+}
+
+String environments = 'test\nnonprod\nprod'
 
 pipeline {
     agent {
@@ -76,6 +90,7 @@ pipeline {
             description: 'When to schedule patching. THIS IS IN GMT/UTC',
             trim: true
         )
+        choice(name: 'ENVIRONMENT', choices: "${environments}")
     }
 
     options {
@@ -87,12 +102,16 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    // def lzs = convertFileToList("${params.Accounts_File}")
-                    // lzs.each {
-                    //     println it
-                    // }
+                    def lzs = []
+                    if ("${params.ENVIRONMENT}" == "nonprod") {
+                        def lzs = convertFileToList("nonprod_lzs.csv")
+                        lzs.each {
+                            println it
+                        }
+                    }
+                   
                     def parallelStagesMap = [:]
-                    for (lz in nonprodLzs) {
+                    for (lz in lzs) {
                         parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
