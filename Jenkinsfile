@@ -41,6 +41,7 @@ def getTestLzsInfo(file, chosenLzs = []) {
         println "1"
         lines.split("\n").each {
             println it
+            println it.getClass()
             if (chosenLzs.contains(it)) {
                 println "2"
                 accounts.add(it.replaceAll("\\s","").split(",") as List)
