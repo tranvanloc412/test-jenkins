@@ -1,10 +1,3 @@
-def nonprodLzs = convertFileToList('nonprod_lzs')
-
-
-nonprodLzs.each {
-    println it
-}
-
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     def params = [
       "AWS_Access_Key" : "${awsAccessKey}",
@@ -71,12 +64,6 @@ pipeline {
         //     defaultValue: 'landingzones.csv',
         //     description: 'File contains list of patching accounts',
         // )
-        string(
-            name: 'LZ_Schedule',
-            defaultValue: '1970-01-01T00:01',
-            description: 'When to schedule patching. THIS IS IN GMT/UTC',
-            trim: true
-        )
     }
 
     options {
@@ -88,12 +75,12 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    // def lzs = convertFileToList("${params.Accounts_File}")
-                    // lzs.each {
-                    //     println it
-                    // }
+                    def lzs = convertFileToList("${params.Accounts_File}")
+                    lzs.each {
+                        println it
+                    }
                     def parallelStagesMap = [:]
-                    for (lz in nonprodLzs) {
+                    for (lz in lzs) {
                         parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
