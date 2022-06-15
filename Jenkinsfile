@@ -140,7 +140,7 @@ pipeline {
                                                           "${params.AWS_Access_Token}",
                                                           lz.get(0),
                                                           lz.get(1),
-                                                          lz.get(2)
+                                                          "${params.LZ_Schedule}"
                                                       )
                     }
                     parallel parallelStagesMap
