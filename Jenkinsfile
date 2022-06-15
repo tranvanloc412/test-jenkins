@@ -22,21 +22,31 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     }
 }
 
-def getLzsInfo(file, chosenLzs = []) {
+def getLzsInfo(file) {
     String fileContents = readFile "${env.WORKSPACE}/${file}"
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     List accounts = []
-    if(chosenLzs.isEmpty()) {
-        lines.split("\n").each {
+    lines.split("\n").each {
+        if (conditions.contains(it)) {
             accounts.add(it.replaceAll("\\s","").split(",") as List)
         }
-    } else {
-        lines.split("\n").each {
+    }
+    
+    return accounts
+}
+
+def getTestLzsInfo(file, chosenLzs = []) {
+    String fileContents = readFile "${env.WORKSPACE}/${file}"
+    lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+    List accounts = []
+    if(!chosenLzs.isEmpty()) {
+         lines.split("\n").each {
             if (conditions.contains(it)) {
                 accounts.add(it.replaceAll("\\s","").split(",") as List)
             }
         }
     }
+
     return accounts
 }
 
@@ -147,7 +157,7 @@ pipeline {
                             break
                         case "test":
                             List chosenLzs = convertStringToList("${params.LANDINGZONES}")
-                            lz = getLzsInfo("test_lzs.csv", chosenLzs)
+                            lz = getTestLzsInfo("test_lzs.csv", chosenLzs)
                             break
                         default:
                             lzs = []
