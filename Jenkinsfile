@@ -35,17 +35,17 @@ def convertStringToList(string) {
 }
 
 def populateChoices(choices) {
-  return '''
-if (ENVIRONMENT == ("test")) { 
-    return "$choices"
+  return """
+if (ENVIRONMENT == ('test')) { 
+    return $choices
 }
-else if (ENVIRONMENT == ("nonprod")) {
-    return ["nonprod_lzs.csv"]
+else if (ENVIRONMENT == ('nonprod')) {
+    return ['nonprod_lzs.csv']
 }
 else {
-    return ["ERROR"]
+    return ['ERROR']
 }
-'''.stripIndent()
+""".stripIndent()
 }
 
 def Test = ["\"aaa\"","\"bbb\"","\"fff\"","\"eee\""]
@@ -62,7 +62,13 @@ properties([
             filterable: true,
             name: 'LANDINGZONES',
             referencedParameters: 'ENVIRONMENT',
-            script: [$class: 'GroovyScript',
+            script: [
+                $class: 'GroovyScript',
+                fallbackScript: [
+                    classpath: [], 
+                    sandbox: true, 
+                    script: 'return ["ERROR"]'
+                ],
                 script: [
                     classpath: [], 
                     sandbox: true, 
