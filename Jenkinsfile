@@ -27,9 +27,7 @@ def getLzsInfo(file) {
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     List accounts = []
     lines.split("\n").each {
-        if (conditions.contains(it)) {
-            accounts.add(it.replaceAll("\\s","").split(",") as List)
-        }
+        accounts.add(it.replaceAll("\\s","").split(",") as List)
     }
     
     return accounts
@@ -39,9 +37,9 @@ def getTestLzsInfo(file, chosenLzs = []) {
     String fileContents = readFile "${env.WORKSPACE}/${file}"
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     List accounts = []
-    if(chosenLzs.isEmpty()) {
+    if(!chosenLzs.isEmpty()) {
          lines.split("\n").each {
-            if (conditions.contains(it)) {
+            if (chosenLzs.contains(it)) {
                 accounts.add(it.replaceAll("\\s","").split(",") as List)
             }
         }
