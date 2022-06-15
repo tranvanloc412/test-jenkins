@@ -149,7 +149,7 @@ pipeline {
                     switch("${params.ENVIRONMENT}") {
                         case "nonprod":
                             println "${params.LANDINGZONES}"
-                            if(!"${params.LANDINGZONES}".trim()) {
+                            if(!"${params.LANDINGZONES}"?.trim()) {
                                 lzs = getLzsInfo("nonprod_lzs.csv")
                             }
                             break
