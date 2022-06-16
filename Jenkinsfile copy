@@ -170,6 +170,7 @@ pipeline {
                             break
                         case  envs.TEST:
                             List chosenLzs = convertStringToList(chosenLzsStr)
+                            // println chosenLzs.getClass()
                             patchingLzs = getTestLzsInfo(testLzsFile, chosenLzs)
                             break
                         default:
@@ -177,13 +178,16 @@ pipeline {
                             break
                     }
 
-                    println "Landing Zones to be patched"
                     patchingLzs.each {
                         println it
+                        // println it.getClass()
                     }
+                    // println patchingLzs.getClass()
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
+                        // println lz.get(0)
+                        // println lz.get(0).getClass()
                         parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
@@ -194,6 +198,24 @@ pipeline {
                                                       )
                     }
                     parallel parallelStagesMap
+                    parallelStagesMap.each { test1 ->
+                        print "1"
+                        println test1
+                        print "2"
+                        println test1.getClass()
+                        print "3"
+                        println test1.getValue().getResult()
+                        // it.each {test1 ->
+                        //     println test1
+                        // }
+                    }
+                    // if (parallelStagesMap.find { it.getValue().getResult().equals('SUCCESS') }) {
+                    //     currentBuild.result = 'SUCCESS'
+                    //     echo "SUCCESS 123"
+                    // } else if (parallelStagesMap.find { it.getValue().getResult().equals('FAILURE') }) {
+                    //     currentBuild.result = 'FAILURE'
+                    //     echo 'FAILURE'
+                    // }
                 }
             }
         }
