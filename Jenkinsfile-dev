@@ -17,7 +17,8 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 
     return {
         stage("${lzShortName}") {
-            build job: "${releaseJob}", parameters: listParams, propagate: false
+            def myjob = build job: "${releaseJob}", parameters: listParams, propagate: false
+            echo "${myjob.getResult()}"
         }
     }
 }
