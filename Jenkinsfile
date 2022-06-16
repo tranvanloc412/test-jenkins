@@ -161,7 +161,7 @@ pipeline {
                
                     switch(chosenEnv) {
                         case envs.NONPROD:
-                            if(chosenLzs != "") {
+                            if(chosenLzsStr != "") {
                                 patchingLzs = getLzsInfo(nonprodLzFile)
                             }
                             break
