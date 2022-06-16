@@ -154,11 +154,16 @@ pipeline {
             steps {
                 script {
                     List lzs = []
-                    public class envs {
-                        final String NONPROD = "nonprod"
-                        final String PROD = "prod"
-                        final String TEST = "test"
-                    }
+                    def envs = [
+                        NONPROD : "nonprod",
+                        PROD : "prod",
+                        TEST : "test"
+                    ]
+                    // public class envs {
+                    //     final String NONPROD = "nonprod"
+                    //     final String PROD = "prod"
+                    //     final String TEST = "test"
+                    // }
                     List chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
                     // String nonprodLzs = "nonprod_lzs.csv"
