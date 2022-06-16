@@ -77,7 +77,8 @@ else {
 
 String environments = "test\nnonprod\nprod"
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
-String nonprodLzs = "nonprod_lzs.csv"
+String nonprodFile = "nonprod_lzs.csv"
+String testFile = "test_lzs.csv"
 String choices = populateChoices(testLzs)
 
 properties([
