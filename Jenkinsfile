@@ -202,13 +202,16 @@ pipeline {
                                                       )
                     }
                     parallel parallelStagesMap
-                    if (parallelStagesMap.find { it.getValue().getResult().equals('SUCCESS') }) {
-                        currentBuild.result = 'SUCCESS'
-                        echo "SUCCESS 123"
-                    } else if (parallelStagesMap.find { it.getValue().getResult().equals('FAILURE') }) {
-                        currentBuild.result = 'FAILURE'
-                        echo 'FAILURE'
+                    parallelStagesMap.each {
+                        println it
                     }
+                    // if (parallelStagesMap.find { it.getValue().getResult().equals('SUCCESS') }) {
+                    //     currentBuild.result = 'SUCCESS'
+                    //     echo "SUCCESS 123"
+                    // } else if (parallelStagesMap.find { it.getValue().getResult().equals('FAILURE') }) {
+                    //     currentBuild.result = 'FAILURE'
+                    //     echo 'FAILURE'
+                    // }
                 }
             }
         }
