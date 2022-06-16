@@ -157,11 +157,11 @@ pipeline {
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
                     List lzs = []
-                    def envs = [
-                        NONPROD : "nonprod",
-                        PROD : "prod",
-                        TEST : "test"
-                    ]
+                    // def envs = [
+                    //     NONPROD : "nonprod",
+                    //     PROD : "prod",
+                    //     TEST : "test"
+                    // ]
                     // public class envs {
                     //     final String NONPROD = "nonprod"
                     //     final String PROD = "prod"
@@ -169,7 +169,7 @@ pipeline {
                     // }
 
                     switch(chosenEnv) {
-                        case "nonprod":
+                        case envs.NONPROD:
                             if(chosenLzs != "") {
                                 lzs = getLzsInfo(nonprodLzs)
                             }
