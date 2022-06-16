@@ -170,6 +170,7 @@ pipeline {
                             break
                         case  envs.TEST:
                             List chosenLzs = convertStringToList(chosenLzsStr)
+                            println chosenLzs.getClass()
                             patchingLzs = getTestLzsInfo(testLzsFile, chosenLzs)
                             break
                         default:
