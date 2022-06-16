@@ -1,10 +1,10 @@
 #!/usr/bin/env groovy
 
-// public class envs {
-//   final String NONPROD = "nonprod"
-//   final String PROD = "prod"
-//   final String TEST = "test"
-// }
+class envs {
+  final String NONPROD = "nonprod"
+  final String PROD = "prod"
+  final String TEST = "test"
+}
 // List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 // String nonprodLzs = "nonprod_lzs.csv"
 
@@ -156,44 +156,37 @@ pipeline {
                 script {
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
-                    println chosenEnv
-                    println chosenLzsStr
-                    println "${params.ENVIRONMENT}"
-
-                    println "${params.LANDINGZONES}"
                     List lzs = []
-                    def envs = [
-                        NONPROD : "nonprod",
-                        PROD : "prod",
-                        TEST : "test"
-                    ]
+                    // def envs = [
+                    //     NONPROD : "nonprod",
+                    //     PROD : "prod",
+                    //     TEST : "test"
+                    // ]
                     // public class envs {
                     //     final String NONPROD = "nonprod"
                     //     final String PROD = "prod"
                     //     final String TEST = "test"
                     // }
                     
-                    // String nonprodLzs = "nonprod_lzs.csv"
-                    // switch("${params.ENVIRONMENT}") {
-                    //     case envs.NONPROD:
-                    //         if(chosenLzs != "") {
-                    //             lzs = getLzsInfo(nonprodLzs)
-                    //         }
-                    //         break
-                    //     case envs.PROD:
-                    //         lzs = []
-                    //         break
-                    //     case "test":
-                    //         println chosenEnv
-                    //         println chosenLzsStr
-                    //         List chosenLzs = convertStringToList(chosenLzsStr)
-                    //         // println chosenLzs
-                    //         lzs = getTestLzsInfo(testLzs, chosenLzs)
-                    //         break
-                    //     default:
-                    //         lzs = []
-                    //         break
-                    // }
+                    String nonprodLzs = "nonprod_lzs.csv"
+                    switch(chosenEnv) {
+                        case envs.NONPROD:
+                            if(chosenLzs != "") {
+                                lzs = getLzsInfo(nonprodLzs)
+                            }
+                            break
+                        case envs.PROD:
+                            lzs = []
+                            break
+                        case  envs.TEST:
+                            List chosenLzs = convertStringToList(chosenLzsStr)
+                            println chosenLzs
+                            lzs = getTestLzsInfo(testLzs, chosenLzs)
+                            break
+                        default:
+                            lzs = []
+                            break
+                    }
 
                     lzs.each {
                         println it
