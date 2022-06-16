@@ -1,7 +1,6 @@
 #!/usr/bin/env groovy
 
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
-
     def params = [
       "AWS_Access_Key" : "${awsAccessKey}",
       "AWS_Secret_Key": "${awsSecretKey}",
@@ -10,6 +9,7 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
       "LZ_SHORTNAME": "${lzShortName}",
       "LZ_Schedule": "${lzSchedule}"
     ]
+
     List listParams = []
     params.each {
         listParams.add([$class: 'StringParameterValue', name: "${it.key}", value: "${it.value}"])
@@ -18,7 +18,7 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     return {
         stage("${lzShortName}") {
             build job: "${releaseJob}", parameters: listParams, propagate: false
-            // println currentBuild.currentResult
+            println currentBuild.currentResult
         }
     }
 }
