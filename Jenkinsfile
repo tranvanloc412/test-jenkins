@@ -1,12 +1,12 @@
 #!/usr/bin/env groovy
 
-public class envs {
-  final String NONPROD = "nonprod"
-  final String PROD = "prod"
-  final String TEST = "test"
-}
+// public class envs {
+//   final String NONPROD = "nonprod"
+//   final String PROD = "prod"
+//   final String TEST = "test"
+// }
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
-String nonprodLzs = "nonprod_lzs.csv"
+// String nonprodLzs = "nonprod_lzs.csv"
 
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     List params = [
@@ -75,9 +75,9 @@ else {
 """.stripIndent()
 }
 
-
 String environments = "test\nnonprod\nprod"
 String choices = populateChoices(testLzs)
+String nonprodLzs = "nonprod_lzs.csv"
 
 properties([
     parameters([
@@ -154,10 +154,14 @@ pipeline {
             steps {
                 script {
                     List lzs = []
+                    public class envs {
+                        final String NONPROD = "nonprod"
+                        final String PROD = "prod"
+                        final String TEST = "test"
+                    }
                     List chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
-                    println chosenEnv
-                    println chosenLzsStr
+                    // String nonprodLzs = "nonprod_lzs.csv"
                     switch(chosenEnv) {
                         case envs.NONPROD:
                             if(chosenLzs != "") {
