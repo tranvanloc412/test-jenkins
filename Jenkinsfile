@@ -199,9 +199,12 @@ pipeline {
                     }
                     parallel parallelStagesMap
                     parallelStagesMap.each { test1 ->
+                        print "1"
                         println test1
+                        print "2"
                         println test1.getClass()
-                        println test1.getValue()
+                        print "3"
+                        println test1.getValue().getResult()
                         // it.each {test1 ->
                         //     println test1
                         // }
