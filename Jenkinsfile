@@ -156,8 +156,11 @@ pipeline {
                 script {
                     List chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
-                    println chosenEnv
-                    println chosenLzsStr
+                    echo chosenEnv
+                    echo chosenLzsStr
+                    echo "${params.ENVIRONMENT}"
+
+                    echo "${params.LANDINGZONES}"
                     List lzs = []
                     def envs = [
                         NONPROD : "nonprod",
@@ -171,26 +174,26 @@ pipeline {
                     // }
                     
                     // String nonprodLzs = "nonprod_lzs.csv"
-                    switch("${params.ENVIRONMENT}") {
-                        case envs.NONPROD:
-                            if(chosenLzs != "") {
-                                lzs = getLzsInfo(nonprodLzs)
-                            }
-                            break
-                        case envs.PROD:
-                            lzs = []
-                            break
-                        case "test":
-                            println chosenEnv
-                            println chosenLzsStr
-                            List chosenLzs = convertStringToList(chosenLzsStr)
-                            // println chosenLzs
-                            lzs = getTestLzsInfo(testLzs, chosenLzs)
-                            break
-                        default:
-                            lzs = []
-                            break
-                    }
+                    // switch("${params.ENVIRONMENT}") {
+                    //     case envs.NONPROD:
+                    //         if(chosenLzs != "") {
+                    //             lzs = getLzsInfo(nonprodLzs)
+                    //         }
+                    //         break
+                    //     case envs.PROD:
+                    //         lzs = []
+                    //         break
+                    //     case "test":
+                    //         println chosenEnv
+                    //         println chosenLzsStr
+                    //         List chosenLzs = convertStringToList(chosenLzsStr)
+                    //         // println chosenLzs
+                    //         lzs = getTestLzsInfo(testLzs, chosenLzs)
+                    //         break
+                    //     default:
+                    //         lzs = []
+                    //         break
+                    // }
 
                     lzs.each {
                         println it
