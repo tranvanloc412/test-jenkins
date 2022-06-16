@@ -19,11 +19,11 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 
     return {
         stage("${lzShortName}") {
-            build job: "${buildJob}", parameters: listParams, propagate: false
+            buildJob
             // println currentBuild.currentResult
-            if(buildJob.result != "SUCCESS") {
-                println "Release status: ${buildJob.result}"
-            }
+            // if(buildJob.result != "SUCCESS") {
+            //     println "Release status: ${buildJob.result}"
+            // }
         }
     }
 }
