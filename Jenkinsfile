@@ -167,9 +167,9 @@ pipeline {
                     //     final String PROD = "prod"
                     //     final String TEST = "test"
                     // }
- 
+
                     switch(chosenEnv) {
-                        case envs.NONPROD:
+                        case "nonprod":
                             if(chosenLzs != "") {
                                 lzs = getLzsInfo(nonprodLzs)
                             }
@@ -186,7 +186,7 @@ pipeline {
                             lzs = []
                             break
                     }
-
+                    println envs.NONPROD
                     lzs.each {
                         println it
                     }
