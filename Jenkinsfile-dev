@@ -204,7 +204,7 @@ pipeline {
                         print "2"
                         println test1.getClass()
                         print "3"
-                        println test1.getValue().result
+                        println test1.getValue().getProperties().toString()
                         // it.each {test1 ->
                         //     println test1
                         // }
