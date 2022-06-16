@@ -203,11 +203,12 @@ pipeline {
                         println test1
                         print "2"
                         println test1.getClass()
-                        print "3"
-                        println test1.getValue().getProperties().toString()
-                        // it.each {test1 ->
-                        //     println test1
-                        // }
+
+                        // print "3"
+                        // println test1.getValue().getProperties().toString()
+                        test1.each {
+                            println it
+                        }
                     }
                     // if (parallelStagesMap.find { it.getValue().getResult().equals('SUCCESS') }) {
                     //     currentBuild.result = 'SUCCESS'
