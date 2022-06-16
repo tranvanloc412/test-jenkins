@@ -154,13 +154,13 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    List chosenEnv = "${params.ENVIRONMENT}"
+                    String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
-                    echo chosenEnv
-                    echo chosenLzsStr
-                    echo "${params.ENVIRONMENT}"
+                    println chosenEnv
+                    println chosenLzsStr
+                    println "${params.ENVIRONMENT}"
 
-                    echo "${params.LANDINGZONES}"
+                    println "${params.LANDINGZONES}"
                     List lzs = []
                     def envs = [
                         NONPROD : "nonprod",
