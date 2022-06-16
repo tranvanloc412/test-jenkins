@@ -1,10 +1,10 @@
 #!/usr/bin/env groovy
 
-class envs {
-  final String NONPROD = "nonprod"
-  final String PROD = "prod"
-  final String TEST = "test"
-}
+def envs = [
+    NONPROD : "nonprod",
+    PROD : "prod",
+    TEST : "test"
+]
 // List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 // String nonprodLzs = "nonprod_lzs.csv"
 
@@ -157,11 +157,11 @@ pipeline {
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
                     List lzs = []
-                    // def envs = [
-                    //     NONPROD : "nonprod",
-                    //     PROD : "prod",
-                    //     TEST : "test"
-                    // ]
+                    def envs = [
+                        NONPROD : "nonprod",
+                        PROD : "prod",
+                        TEST : "test"
+                    ]
                     // public class envs {
                     //     final String NONPROD = "nonprod"
                     //     final String PROD = "prod"
