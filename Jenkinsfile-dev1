@@ -6,26 +6,6 @@ def envs = [
     TEST : "test"
 ]
 
-def releaseJobs = [
-    TEST: "test_job",
-    DEPLOYSSM: "deploy_ssm_documents",
-    DEPLOYIAMROLE: "deploy_iam_role",
-    STARTEC2: "start_instances",
-    SCHEDULE: "schedule_patching"
-]
-
-def jobPath = [
-    TEST: "test/ReleaseJob",
-    DEPLOYSSM: "test/ReleaseJob",
-    DEPLOYIAMROLE: "test/ReleaseJob",
-    STARTEC2: "test/ReleaseJob",
-    SCHEDULE: "test/ReleaseJob"
-]
-
-def jobAddParams = [
-    LZ_ACTION: ['CHECK', 'ADD', 'DELETE']
-]
-
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     def params = [
       "AWS_Access_Key" : "${awsAccessKey}",
@@ -98,22 +78,7 @@ else {
 """.stripIndent()
 }
 
-// def populateParams(jobAddParams) {
-//   return """
-// if (ENVIRONMENT == ('test')) { 
-//     return $testLzs
-// }
-// else if (ENVIRONMENT == ('nonprod')) {
-//     return ['nonprod_lzs.csv']
-// }
-// else {
-//     return ['ERROR']
-// }
-// """.stripIndent()
-// }
-
-String displayEnvs = "${envs.TEST}\n${envs.NONPROD}\n${envs.PROD}"
-String displayReleaseJobs = ""
+String environments = "test\nnonprod\nprod"
 
 String nonprodLzFile = "nonprod_lzs.csv"
 
@@ -149,7 +114,9 @@ properties([
 ])
 
 pipeline {
-    agent { label 'tooling' }
+    agent {
+        label 'tooling'
+    }
 
     parameters {
         string(
@@ -181,7 +148,7 @@ pipeline {
             description: 'When to schedule patching. THIS IS IN GMT/UTC',
             trim: true
         )
-        choice(name: 'ENVIRONMENT', choices: "${displayEnvs}")
+        choice(name: 'ENVIRONMENT', choices: "${environments}")
     }
 
     options {
