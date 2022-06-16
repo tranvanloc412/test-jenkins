@@ -5,7 +5,7 @@
 //   final String PROD = "prod"
 //   final String TEST = "test"
 // }
-List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
+// List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 // String nonprodLzs = "nonprod_lzs.csv"
 
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
@@ -78,6 +78,7 @@ else {
 String environments = "test\nnonprod\nprod"
 String choices = populateChoices(testLzs)
 String nonprodLzs = "nonprod_lzs.csv"
+List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 
 properties([
     parameters([
@@ -176,7 +177,7 @@ pipeline {
                         case envs.PROD:
                             lzs = []
                             break
-                        case envs.TEST:
+                        case "test":
                             List chosenLzs = convertStringToList(chosenLzsStr)
                             // println chosenLzs
                             lzs = getTestLzsInfo(testLzs, chosenLzs)
