@@ -187,6 +187,8 @@ pipeline {
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
+                        println lz.get(0)
+                        println lz.get(0).getClass()
                         parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
