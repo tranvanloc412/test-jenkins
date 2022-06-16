@@ -171,7 +171,7 @@ pipeline {
                     // }
                     
                     // String nonprodLzs = "nonprod_lzs.csv"
-                    switch(chosenEnv) {
+                    switch("${params.ENVIRONMENT}") {
                         case envs.NONPROD:
                             if(chosenLzs != "") {
                                 lzs = getLzsInfo(nonprodLzs)
@@ -181,6 +181,8 @@ pipeline {
                             lzs = []
                             break
                         case "test":
+                            println chosenEnv
+                            println chosenLzsStr
                             List chosenLzs = convertStringToList(chosenLzsStr)
                             // println chosenLzs
                             lzs = getTestLzsInfo(testLzs, chosenLzs)
