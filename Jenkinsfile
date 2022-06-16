@@ -167,8 +167,7 @@ pipeline {
                     //     final String PROD = "prod"
                     //     final String TEST = "test"
                     // }
-                    
-                    String nonprodLzs = "nonprod_lzs.csv"
+ 
                     switch(chosenEnv) {
                         case envs.NONPROD:
                             if(chosenLzs != "") {
