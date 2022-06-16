@@ -1,6 +1,12 @@
 #!/usr/bin/env groovy
 
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
+    // println releaseJob.getClass()
+    // println awsAccessKey.getClass()
+    // println awsSecretKey.getClass()
+    // println releaseJob.getClass()
+    // println releaseJob.getClass()
+    // println releaseJob.getClass()
     List params = [
       "AWS_Access_Key" : "${awsAccessKey}",
       "AWS_Secret_Key": "${awsSecretKey}",
@@ -11,6 +17,8 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     ]
     List listParams = []
     params.each {
+        println it.key
+        println it.value
         listParams.add([$class: 'StringParameterValue', name: "${it.key}", value: "${it.value}"])
     }
 
@@ -170,7 +178,7 @@ pipeline {
                             break
                         case  envs.TEST:
                             List chosenLzs = convertStringToList(chosenLzsStr)
-                            println chosenLzs.getClass()
+                            // println chosenLzs.getClass()
                             patchingLzs = getTestLzsInfo(testLzsFile, chosenLzs)
                             break
                         default:
@@ -180,15 +188,15 @@ pipeline {
 
                     patchingLzs.each {
                         println it
-                        println it.getClass()
+                        // println it.getClass()
                     }
-                    println patchingLzs.getClass()
+                    // println patchingLzs.getClass()
 
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
-                        println lz.get(0)
-                        println lz.get(0).getClass()
+                        // println lz.get(0)
+                        // println lz.get(0).getClass()
                         parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
