@@ -18,10 +18,6 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     return {
         stage("${lzShortName}") {
             build job: "${releaseJob}", parameters: listParams, propagate: false
-            // println currentBuild.currentResult
-            // if(buildJob.result != "SUCCESS") {
-            //     println "Release status: ${buildJob.result}"
-            // }
         }
     }
 }
@@ -202,11 +198,12 @@ pipeline {
                                                       )
                     }
                     parallel parallelStagesMap
-                    parallelStagesMap.each {
-                        println it
-                        it.each {test1 ->
-                            println test1
-                        }
+                    parallelStagesMap.each { test1 ->
+                        println test1
+                        println test1.getClass()
+                        // it.each {test1 ->
+                        //     println test1
+                        // }
                     }
                     // if (parallelStagesMap.find { it.getValue().getResult().equals('SUCCESS') }) {
                     //     currentBuild.result = 'SUCCESS'
