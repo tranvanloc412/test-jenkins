@@ -1,13 +1,5 @@
 #!/usr/bin/env groovy
 
-def envs = [
-    NONPROD : "nonprod",
-    PROD : "prod",
-    TEST : "test"
-]
-// List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
-// String nonprodLzs = "nonprod_lzs.csv"
-
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     List params = [
       "AWS_Access_Key" : "${awsAccessKey}",
@@ -75,9 +67,17 @@ else {
 """.stripIndent()
 }
 
+def envs = [
+    NONPROD : "nonprod",
+    PROD : "prod",
+    TEST : "test"
+]
+
 String environments = "test\nnonprod\nprod"
-List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
+
 String nonprodFile = "nonprod_lzs.csv"
+
+List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String testFile = "test_lzs.csv"
 String choices = populateChoices(testLzs)
 
