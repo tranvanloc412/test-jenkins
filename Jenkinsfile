@@ -24,7 +24,11 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     return {
         stage("${lzShortName}") {
             def jobBuild = build job: "${releaseJob}", parameters: listParams, propagate: false
-            echo "Pathching status on ${lzShortName} is: ${jobBuild.getResult()}"
+            def rs = .getResult()
+            echo "Pathching status on ${lzShortName} is: ${rs}"
+            if(rs != "SUCCESS") {
+                currentBuild.result = 'UNSTABLE'
+            }
         }
     }
 }
