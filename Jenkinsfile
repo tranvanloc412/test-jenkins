@@ -204,6 +204,9 @@ pipeline {
                     parallel parallelStagesMap
                     parallelStagesMap.each {
                         println it
+                        it.each {test1 ->
+                            println test1
+                        }
                     }
                     // if (parallelStagesMap.find { it.getValue().getResult().equals('SUCCESS') }) {
                     //     currentBuild.result = 'SUCCESS'
