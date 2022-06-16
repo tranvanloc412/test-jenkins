@@ -1,5 +1,11 @@
 #!/usr/bin/env groovy
 
+def envs = [
+    NONPROD : "nonprod",
+    PROD : "prod",
+    TEST : "test"
+]
+
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     def params = [
       "AWS_Access_Key" : "${awsAccessKey}",
@@ -17,7 +23,8 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 
     return {
         stage("${lzShortName}") {
-            build job: "${releaseJob}", parameters: listParams, propagate: false
+            def jobBuild = build job: "${releaseJob}", parameters: listParams, propagate: false
+            echo "Pathching status on ${lzShortName} is: ${jobBuild.getResult()}"
         }
     }
 }
@@ -66,12 +73,6 @@ else {
 }
 """.stripIndent()
 }
-
-def envs = [
-    NONPROD : "nonprod",
-    PROD : "prod",
-    TEST : "test"
-]
 
 String environments = "test\nnonprod\nprod"
 
