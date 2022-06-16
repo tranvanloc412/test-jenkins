@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-class envs {
+public class envs {
   final String NONPROD = "nonprod"
   final String PROD = "prod"
   final String TEST = "test"
@@ -159,7 +159,7 @@ pipeline {
                     switch(chosenEnv) {
                         case envs.NONPROD:
                             if(chosenLzs != "") {
-                                lzs = getLzsInfo("nonprod_lzs.csv")
+                                lzs = getLzsInfo(nonprodLzs)
                             }
                             break
                         case envs.PROD:
@@ -168,7 +168,7 @@ pipeline {
                         case envs.TEST:
                             List chosenLzs = convertStringToList(chosenLzsStr)
                             // println chosenLzs
-                            lzs = getTestLzsInfo("test_lzs.csv", chosenLzs)
+                            lzs = getTestLzsInfo(testLzs, chosenLzs)
                             break
                         default:
                             lzs = []
