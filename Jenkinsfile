@@ -179,7 +179,10 @@ pipeline {
 
                     patchingLzs.each {
                         println it
+                        println it.getClass()
                     }
+                    println patchingLzs.getClass()
+
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
