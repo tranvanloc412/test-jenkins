@@ -176,23 +176,23 @@ pipeline {
                             patchingLzs = []
                             break
                     }
-                    
+
                     patchingLzs.each {
                         println it
                     }
                    
-                    // def parallelStagesMap = [:]
-                    // for (lz in lzs) {
-                    //     parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
-                    //                                       "${params.AWS_Access_Key}",
-                    //                                       "${params.AWS_Secret_Key}",
-                    //                                       "${params.AWS_Access_Token}",
-                    //                                       lz.get(0),
-                    //                                       lz.get(1),
-                    //                                       "${params.LZ_Schedule}"
-                    //                                   )
-                    // }
-                    // parallel parallelStagesMap
+                    def parallelStagesMap = [:]
+                    for (lz in patchingLzs) {
+                        parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
+                                                          "${params.AWS_Access_Key}",
+                                                          "${params.AWS_Secret_Key}",
+                                                          "${params.AWS_Access_Token}",
+                                                          lz.get(0),
+                                                          lz.get(1),
+                                                          "${params.LZ_Schedule}"
+                                                      )
+                    }
+                    parallel parallelStagesMap
                 }
             }
         }
