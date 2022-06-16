@@ -15,6 +15,7 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
       "LZ_SHORTNAME": "${lzShortName}",
       "LZ_Schedule": "${lzSchedule}"
     ]
+    println params
     List listParams = []
     params.each {
         println it.key
