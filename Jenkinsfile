@@ -15,8 +15,6 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
         listParams.add([$class: 'StringParameterValue', name: "${it.key}", value: "${it.value}"])
     }
 
-    // def buildJob = build job: "${releaseJob}", parameters: listParams, propagate: false
-
     return {
         stage("${lzShortName}") {
             build job: "${releaseJob}", parameters: listParams, propagate: false
@@ -189,7 +187,6 @@ pipeline {
                         // println it.getClass()
                     }
                     // println patchingLzs.getClass()
-
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
@@ -205,6 +202,13 @@ pipeline {
                                                       )
                     }
                     parallel parallelStagesMap
+                    if (parallelStagesMap.find { it.getValue().getResult().equals('SUCCESS') }) {
+                        currentBuild.result = 'SUCCESS'
+                        echo "SUCCESS 123"
+                    } else if (parallelStagesMap.find { it.getValue().getResult().equals('FAILURE') }) {
+                        currentBuild.result = 'FAILURE'
+                        echo 'FAILURE'
+                    }
                 }
             }
         }
