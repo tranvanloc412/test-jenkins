@@ -17,8 +17,8 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 
     return {
         stage("${lzShortName}") {
-            def myjob = build job: "${releaseJob}", parameters: listParams, propagate: false
-            echo "${myjob.getResult()}"
+            def jobBuild = build job: "${releaseJob}", parameters: listParams, propagate: false
+            echo "Pathching Job on ${lzShortName} is: ${jobBuild.getResult()}"
         }
     }
 }
