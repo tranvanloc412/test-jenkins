@@ -156,6 +156,8 @@ pipeline {
                     List lzs = []
                     List chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
+                    println chosenEnv
+                    println chosenLzsStr
                     switch(chosenEnv) {
                         case envs.NONPROD:
                             if(chosenLzs != "") {
