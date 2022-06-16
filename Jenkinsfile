@@ -1,13 +1,8 @@
 #!/usr/bin/env groovy
 
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
-    // println releaseJob.getClass()
-    // println awsAccessKey.getClass()
-    // println awsSecretKey.getClass()
-    // println releaseJob.getClass()
-    // println releaseJob.getClass()
-    // println releaseJob.getClass()
-    List params = [
+
+    def params = [
       "AWS_Access_Key" : "${awsAccessKey}",
       "AWS_Secret_Key": "${awsSecretKey}",
       "AWS_Access_Token": "${awsAccessToken}",
@@ -15,11 +10,8 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
       "LZ_SHORTNAME": "${lzShortName}",
       "LZ_Schedule": "${lzSchedule}"
     ]
-    println params
     List listParams = []
     params.each {
-        println it.key
-        println it.value
         listParams.add([$class: 'StringParameterValue', name: "${it.key}", value: "${it.value}"])
     }
 
