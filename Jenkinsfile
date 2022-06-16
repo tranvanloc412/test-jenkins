@@ -75,10 +75,10 @@ def envs = [
 
 String environments = "test\nnonprod\nprod"
 
-String nonprodFile = "nonprod_lzs.csv"
+String nonprodLzFile = "nonprod_lzs.csv"
 
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
-String testFile = "test_lzs.csv"
+String testLzsFile = "test_lzs.csv"
 String choices = populateChoices(testLzs)
 
 properties([
@@ -157,38 +157,27 @@ pipeline {
                 script {
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
-                    List lzs = []
-                    // def envs = [
-                    //     NONPROD : "nonprod",
-                    //     PROD : "prod",
-                    //     TEST : "test"
-                    // ]
-                    // public class envs {
-                    //     final String NONPROD = "nonprod"
-                    //     final String PROD = "prod"
-                    //     final String TEST = "test"
-                    // }
-
+                    List patchingLzs = []
+               
                     switch(chosenEnv) {
                         case envs.NONPROD:
                             if(chosenLzs != "") {
-                                lzs = getLzsInfo(nonprodLzs)
+                                patchingLzs = getLzsInfo(nonprodLzFile)
                             }
                             break
                         case envs.PROD:
-                            lzs = []
+                            patchingLzs = []
                             break
                         case  envs.TEST:
                             List chosenLzs = convertStringToList(chosenLzsStr)
-                            println chosenLzs
-                            lzs = getTestLzsInfo(testLzs, chosenLzs)
+                            patchingLzs = getTestLzsInfo(testLzsFile, chosenLzs)
                             break
                         default:
-                            lzs = []
+                            patchingLzs = []
                             break
                     }
-                    println envs.NONPROD
-                    lzs.each {
+                    
+                    patchingLzs.each {
                         println it
                     }
                    
