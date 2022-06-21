@@ -90,10 +90,10 @@ if (ENVIRONMENT == ('test')) {
     return $testLzs
 }
 else if (ENVIRONMENT == ('nonprod')) {
-    return 'nonprod_lzs.csv'
+    return ['nonprod_lzs.csv']
 }
 else {
-    return 'ERROR'
+    return ['ERROR']
 }
 """.stripIndent()
 }
@@ -136,7 +136,7 @@ properties([
                 fallbackScript: [
                     classpath: [], 
                     sandbox: true, 
-                    script: 'return "ERROR"'
+                    script: 'return ["ERROR"]'
                 ],
                 script: [
                     classpath: [], 
