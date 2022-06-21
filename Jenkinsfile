@@ -105,10 +105,10 @@ else {
 
 def populateParams(params) {
   return """
-if (JOBS == 'test') { 
+if (RELEASEJOB == 'test') { 
     return $params.LZ_ACTION
 }
-else if (JOBS == 'nonprod') {
+else if (RELEASEJOB == 'nonprod') {
     return ['nonprod_lzs.csv']
 }
 else {
@@ -135,7 +135,7 @@ properties([
             description: 'Select Landing Zones to patch',
             filterLength: 10,
             filterable: true,
-            name: 'LANDINGZONES',
+            name: 'LANDING_ZONES',
             referencedParameters: 'ENVIRONMENT',
             script: [
                 $class: 'GroovyScript',
@@ -154,10 +154,10 @@ properties([
         [
             $class: 'CascadeChoiceParameter', 
             choiceType: 'PT_SINGLE_SELECT',
-            description: 'Additional Params for Release Jobs',
+            description: 'Additional Parameters for Release Jobs',
             filterLength: 10,
             filterable: false,
-            name: 'ADDITIONAL PARAMETERS',
+            name: 'ADDITIONAL_PARAMETERS',
             referencedParameters: 'JOBS',
             script: [
                 $class: 'GroovyScript',
@@ -198,11 +198,11 @@ pipeline {
             description: 'Your AWS Token for HIPCMSProvisionSpokeRole on CMS HUB account',
             trim: true
         )
-        string(
-            name: 'Release_Job',
-            defaultValue: 'test/ReleaseJob',
-            description: 'Jenkins job to call',
-        )
+        // string(
+        //     name: 'Release_Job',
+        //     defaultValue: 'test/ReleaseJob',
+        //     description: 'Jenkins job to call',
+        // )
         string(
             name: 'LZ_Schedule',
             defaultValue: '1970-01-01T00:01',
@@ -210,7 +210,7 @@ pipeline {
             trim: true
         )
         choice(name: 'ENVIRONMENT', choices: "${displayEnvs}")
-        choice(name: 'JOBS', choices: "${displayJobs}")
+        choice(name: 'RELEASEJOB', choices: "${displayJobs}")
     }
 
     options {
@@ -225,6 +225,9 @@ pipeline {
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
                     List patchingLzs = []
+
+                    String releaseJob = "${params.RELEASEJOB}"
+                    String releaseJobPath = ""
                
                     switch(chosenEnv) {
                         case envs.NONPROD:
@@ -244,6 +247,26 @@ pipeline {
                             break
                     }
 
+                    switch(chosenJob) {
+                        case jobs.TEST:
+                            releaseJobPath = jobPath.TEST
+                            break
+                        case jobs.DEPLOYSSM:
+                            releaseJobPath = jobPath.DEPLOYSSM
+                            break
+                        case jobs.DEPLOYIAMROLE:
+                            releaseJobPath = jobPath.DEPLOYIAMROLE
+                            break
+                        case jobs.STARTEC2:
+                            releaseJobPath = jobPath.STARTEC2
+                            break
+                        case jobs.SCHEDULE:
+                            releaseJobPath = jobPath.SCHEDULE
+                            break
+                        default:
+                            break
+                    }
+
                     println "Landing Zones to be patched"
                     patchingLzs.each {
                         println it
@@ -251,7 +274,7 @@ pipeline {
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
-                        parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
+                        parallelStagesMap[lz.get(0)] = generateStage("${releaseJobPath}",
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
                                                           "${params.AWS_Access_Token}",
