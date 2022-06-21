@@ -86,7 +86,7 @@ def convertStringToList(string) {
 
 def populateChoices(testLzs) {
   return """
-if (ENVIRONMENT == ('test')) { 
+if (ENVIRONMENT == ('${envs.TEST}')) { 
     return $testLzs
 }
 else if (ENVIRONMENT == ('nonprod')) {
@@ -135,7 +135,7 @@ properties([
                 $class: 'GroovyScript',
                 fallbackScript: [
                     classpath: [], 
-                    sandbox: true, 
+                    sandbox: true,
                     script: 'return ["ERROR"]'
                 ],
                 script: [
