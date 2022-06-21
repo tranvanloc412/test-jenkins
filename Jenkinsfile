@@ -6,7 +6,7 @@ def envs = [
     TEST : "test"
 ]
 
-def releaseJobs = [
+def jobs = [
     TEST: "test_job",
     DEPLOYSSM: "deploy_ssm_documents",
     DEPLOYIAMROLE: "deploy_iam_role",
@@ -90,6 +90,20 @@ if (ENVIRONMENT == ('test')) {
     return $testLzs
 }
 else if (ENVIRONMENT == ('nonprod')) {
+    return 'nonprod_lzs.csv'
+}
+else {
+    return 'ERROR'
+}
+""".stripIndent()
+}
+
+def populateParams(jobAddParams) {
+  return """
+if (ENVIRONMENT == ('test')) { 
+    return $testLzs
+}
+else if (ENVIRONMENT == ('nonprod')) {
     return ['nonprod_lzs.csv']
 }
 else {
@@ -98,22 +112,8 @@ else {
 """.stripIndent()
 }
 
-// def populateParams(jobAddParams) {
-//   return """
-// if (ENVIRONMENT == ('test')) { 
-//     return $testLzs
-// }
-// else if (ENVIRONMENT == ('nonprod')) {
-//     return ['nonprod_lzs.csv']
-// }
-// else {
-//     return ['ERROR']
-// }
-// """.stripIndent()
-// }
-
 String displayEnvs = "${envs.TEST}\n${envs.NONPROD}\n${envs.PROD}"
-String displayReleaseJobs = ""
+String displayJobs = "${jobs.TEST}\n${jobs.DEPLOYSSM}\n${jobs.DEPLOYIAMROLE}\n${jobs.STARTEC2}\n${jobs.SCHEDULE}"
 
 String nonprodLzFile = "nonprod_lzs.csv"
 
@@ -136,7 +136,7 @@ properties([
                 fallbackScript: [
                     classpath: [], 
                     sandbox: true, 
-                    script: 'return ["ERROR"]'
+                    script: 'return "ERROR"'
                 ],
                 script: [
                     classpath: [], 
@@ -145,6 +145,28 @@ properties([
                 ]
             ]
         ]
+        // [
+        //     $class: 'CascadeChoiceParameter', 
+        //     choiceType: 'PT_SINGLE_SELECT',
+        //     description: 'Additional Params for Release Jobs',
+        //     filterLength: 10,
+        //     filterable: false,
+        //     name: 'ADDITIONAL_PARAMS',
+        //     referencedParameters: 'JOBS',
+        //     script: [
+        //         $class: 'GroovyScript',
+        //         fallbackScript: [
+        //             classpath: [], 
+        //             sandbox: true, 
+        //             script: 'return "ERROR"'
+        //         ],
+        //         script: [
+        //             classpath: [], 
+        //             sandbox: true, 
+        //             script: choices
+        //         ]
+        //     ]
+        // ]
     ])
 ])
 
@@ -182,6 +204,7 @@ pipeline {
             trim: true
         )
         choice(name: 'ENVIRONMENT', choices: "${displayEnvs}")
+        // choice(name: 'JOBS', choices: "${displayJobs}")
     }
 
     options {
