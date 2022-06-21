@@ -85,7 +85,7 @@ def convertStringToList(string) {
 }
 
 def populateChoices(testLzs) {
-    def envs = envs
+    def envs = "${envs}"
     envs.each {
         println it
     }
