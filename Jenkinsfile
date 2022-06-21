@@ -86,6 +86,9 @@ def convertStringToList(string) {
 
 def populateChoices(testLzs) {
     def envs = envs
+    envs.each {
+        println it
+    }
   return """
 if (ENVIRONMENT == ('$envs.TEST')) { 
     return $testLzs
