@@ -1,5 +1,7 @@
 #!/usr/bin/env groovy
+import groovy.transform.Field
 
+@Field
 def envs = [
     NONPROD : "nonprod",
     PROD : "prod",
@@ -85,10 +87,10 @@ def convertStringToList(string) {
 }
 
 def populateChoices(testLzs) {
-    def envs = "${envs}"
-    envs.each {
-        println it
-    }
+    // def envs = "${envs}"
+    // envs.each {
+    //     println it
+    // }
   return """
 if (ENVIRONMENT == ('$envs.TEST')) { 
     return $testLzs
@@ -140,7 +142,7 @@ properties([
                 fallbackScript: [
                     classpath: [], 
                     sandbox: true,
-                    script: 'return ["ERROR"]'
+                    script: "return ['ERROR']"
                 ],
                 script: [
                     classpath: [], 
