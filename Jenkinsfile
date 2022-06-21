@@ -150,7 +150,7 @@ properties([
                     script: envChoices
                 ]
             ]
-        ]
+        ],
         [
             $class: 'CascadeChoiceParameter', 
             choiceType: 'PT_SINGLE_SELECT',
