@@ -274,7 +274,7 @@ pipeline {
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
-                        parallelStagesMap[lz.get(0)] = generateStage("${releaseJobPath}",
+                        parallelStagesMap[lz.get(0)] = generateStage(releaseJobPath,
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
                                                           "${params.AWS_Access_Token}",
