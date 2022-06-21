@@ -247,7 +247,7 @@ pipeline {
                             break
                     }
 
-                    switch(chosenJob) {
+                    switch(releaseJob) {
                         case jobs.TEST:
                             releaseJobPath = jobPath.TEST
                             break
