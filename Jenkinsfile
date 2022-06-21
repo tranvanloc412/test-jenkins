@@ -8,6 +8,7 @@ def envs = [
     TEST : "test"
 ]
 
+@Field
 def jobs = [
     TEST: "test_job",
     DEPLOYSSM: "deploy_ssm_documents",
@@ -16,6 +17,7 @@ def jobs = [
     SCHEDULE: "schedule_patching"
 ]
 
+@Field
 def jobPath = [
     TEST: "test/ReleaseJob",
     DEPLOYSSM: "test/ReleaseJob",
@@ -24,6 +26,7 @@ def jobPath = [
     SCHEDULE: "test/ReleaseJob"
 ]
 
+@Field
 def jobAddParams = [
     LZ_ACTION: ['CHECK', 'ADD', 'DELETE']
 ]
@@ -87,15 +90,11 @@ def convertStringToList(string) {
 }
 
 def populateChoices(testLzs) {
-    // def envs = "${envs}"
-    // envs.each {
-    //     println it
-    // }
   return """
-if (ENVIRONMENT == ('$envs.TEST')) { 
+if (ENVIRONMENT == '$envs.TEST') { 
     return $testLzs
 }
-else if (ENVIRONMENT == ('nonprod')) {
+else if (ENVIRONMENT == '$envs.NONPROD') {
     return ['nonprod_lzs.csv']
 }
 else {
@@ -104,12 +103,12 @@ else {
 """.stripIndent()
 }
 
-def populateParams(jobAddParams) {
+def populateParams(params) {
   return """
-if (ENVIRONMENT == ('test')) { 
-    return $testLzs
+if (JOBS == 'test') { 
+    return $params.LZ_ACTION
 }
-else if (ENVIRONMENT == ('nonprod')) {
+else if (JOBS == 'nonprod') {
     return ['nonprod_lzs.csv']
 }
 else {
@@ -125,7 +124,8 @@ String nonprodLzFile = "nonprod_lzs.csv"
 
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String testLzsFile = "test_lzs.csv"
-String choices = populateChoices(testLzs)
+String envChoices = populateChoices(testLzs)
+String jobChoices = populateChoices(jobAddParams)
 
 properties([
     parameters([
@@ -147,32 +147,32 @@ properties([
                 script: [
                     classpath: [], 
                     sandbox: true, 
-                    script: choices
+                    script: envChoices
                 ]
             ]
         ]
-        // [
-        //     $class: 'CascadeChoiceParameter', 
-        //     choiceType: 'PT_SINGLE_SELECT',
-        //     description: 'Additional Params for Release Jobs',
-        //     filterLength: 10,
-        //     filterable: false,
-        //     name: 'ADDITIONAL_PARAMS',
-        //     referencedParameters: 'JOBS',
-        //     script: [
-        //         $class: 'GroovyScript',
-        //         fallbackScript: [
-        //             classpath: [], 
-        //             sandbox: true, 
-        //             script: 'return "ERROR"'
-        //         ],
-        //         script: [
-        //             classpath: [], 
-        //             sandbox: true, 
-        //             script: choices
-        //         ]
-        //     ]
-        // ]
+        [
+            $class: 'CascadeChoiceParameter', 
+            choiceType: 'PT_SINGLE_SELECT',
+            description: 'Additional Params for Release Jobs',
+            filterLength: 10,
+            filterable: false,
+            name: 'ADDITIONAL PARAMETERS',
+            referencedParameters: 'JOBS',
+            script: [
+                $class: 'GroovyScript',
+                fallbackScript: [
+                    classpath: [], 
+                    sandbox: true, 
+                    script: 'return "ERROR"'
+                ],
+                script: [
+                    classpath: [], 
+                    sandbox: true, 
+                    script: jobChoices
+                ]
+            ]
+        ]
     ])
 ])
 
@@ -210,7 +210,7 @@ pipeline {
             trim: true
         )
         choice(name: 'ENVIRONMENT', choices: "${displayEnvs}")
-        // choice(name: 'JOBS', choices: "${displayJobs}")
+        choice(name: 'JOBS', choices: "${displayJobs}")
     }
 
     options {
