@@ -38,8 +38,8 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 }
 
 def getLzShortNames(file) {
-    node {
-        sh 'ls'
+    // node {
+    //     sh 'ls'
         String fileContents = readFile "${env.WORKSPACE}/${file}"
         lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
         List accounts = []
@@ -47,8 +47,9 @@ def getLzShortNames(file) {
             List tmp = it.replaceAll("\\s","").split(",")
             accounts.add(tmp)
         }
-        return accounts
-    }
+        // return accounts
+        return ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
+    // }
 }
 
 def getLzsInfo(file) {
@@ -82,8 +83,11 @@ def convertStringToList(string) {
     return Arrays.asList(string.split("\\s*,\\s*"))
 }
 
-def populateChoices(testLzs) {
-  return """
+def populateChoices(file) {
+// def populateChoices(testLzs) {
+    def testLzs = getLzShortNames(file)
+    println "LZs: " testLzs
+    return """
 if (ENVIRONMENT == ('test')) { 
     return $testLzs
 }
@@ -107,8 +111,9 @@ String testLzsFile = "test_lzs.csv"
 
 // def filePath = FilePath.absolutize()
 
-def testLzFromFile = getLzShortNames(testLzsFile)
-String choices = populateChoices(testLzs)
+// def testLzFromFile = getLzShortNames(testLzsFile)
+// String choices = populateChoices(testLzs)
+String choices = populateChoices(testLzsFile)
 
 properties([
     parameters([
@@ -184,7 +189,7 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    println "test:" testLzFromFile
+                    // println "test:" testLzFromFile
                     // println filePath
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
