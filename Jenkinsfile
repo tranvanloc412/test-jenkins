@@ -64,7 +64,7 @@ def getChosenLzsInfo(file, chosenLzs = []) {
     if( !chosenLzs.isEmpty() ) {
         lines.split("\n").each {
             List tmp = splitStringToList(it)
-            if (chosenLzs.contains(getShortNameInList(tmp))) {
+            if (chosenLzs.contains(getShortName(tmp))) {
                 accounts.add(tmp)
             }
         }
@@ -80,7 +80,7 @@ def getLzShortNames(file) {
 
         lines.split("\n").each {
             List tmp = splitStringToList(it)
-            accounts.add("\"${getShortNameInList(tmp)}\"")
+            accounts.add("\"${getShortName(tmp)}\"")
         }
         return accounts
     }
@@ -90,7 +90,11 @@ def convertStringToList(string) {
     return Arrays.asList(string.split("\\s*,\\s*"))
 }
 
-def getShortNameInList(lz) {
+def getID(lz) {
+    return lz.get(0)
+}
+
+def getShortName(lz) {
     return lz.get(1)
 }
 
@@ -217,12 +221,12 @@ pipeline {
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
-                        parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
+                        parallelStagesMap[getID(lz)] = generateStage("${params.Release_Job}",
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
                                                           "${params.AWS_Access_Token}",
-                                                          lz.get(0),
-                                                          lz.get(1),
+                                                          getID(lz),
+                                                          getShortName(lz),
                                                           "${params.LZ_Schedule}"
                                                       )
                     }
