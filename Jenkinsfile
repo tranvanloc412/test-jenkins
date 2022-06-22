@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
-import hudson.*
-import groovy.transform.Field
+import hudson.FilePath;
+import groovy.transform.Field;
 
 // env.WORKSPACE = pwd()
 
