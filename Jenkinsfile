@@ -39,13 +39,15 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 
 def getLzShortNames(file) {
     node {
-        // sh 'ls'
         String fileContents = readFile "${env.WORKSPACE}/${file}"
         lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
         List accounts = []
         lines.split("\n").each {
             List tmp = it.replaceAll("\\s","").split(",")
             accounts.add(tmp)
+        }
+        accounts.each {
+            println it
         }
         // return accounts
         return ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
