@@ -2,8 +2,6 @@
 import hudson.FilePath;
 import groovy.transform.Field;
 
-// env.WORKSPACE = pwd()
-
 def envs = [
     NONPROD : "nonprod",
     PROD : "prod",
@@ -49,7 +47,7 @@ def getLzShortNames(file) {
         lzs.each {
             println it
         }
-        // return accounts
+
         return lzs
     }
 }
@@ -106,15 +104,8 @@ String environments = "test\nnonprod\nprod"
 
 String nonprodLzFile = "nonprod_lzs.csv"
 
-
-
-// List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String testLzsFile = "test_lzs.csv"
 
-// def filePath = FilePath.absolutize()
-
-// def testLzFromFile = getLzShortNames(testLzsFile)
-// String choices = populateChoices(testLzs)
 String choices = populateChoices(testLzsFile)
 
 properties([
