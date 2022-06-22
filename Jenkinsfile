@@ -65,6 +65,7 @@ def getLzsInfoFromFile(file) {
     List accounts = []
 
     lines.split("\n").each {
+        List tmp = splitString(it)
         accounts.add(tmp)
     }
     
