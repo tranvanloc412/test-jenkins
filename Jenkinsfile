@@ -44,7 +44,7 @@ def getLzShortNames(file) {
         List lzs = []
         lines.split("\n").each {
             List line = it.replaceAll("\\s","").split(",")
-            lzs.add("\"${shortName.get(1)}\"")
+            lzs.add("\"${line.get(1)}\"")
         }
         lzs.each {
             println it
