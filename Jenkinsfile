@@ -104,7 +104,7 @@ def populateChoices() {
     def testLzs = getLzShortNames(files.TEST)
 
     return """
-switch(chosenEnv) {
+switch(ENVIRONMENT) {
     case '$envs.TEST':
         return $testLzs
     case '$envs.NONPROD':
