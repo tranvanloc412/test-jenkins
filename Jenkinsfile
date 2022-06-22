@@ -96,7 +96,8 @@ String nonprodLzFile = "nonprod_lzs.csv"
 
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String testLzsFile = "test_lzs.csv"
-def testLzFromFile = readFile(file: 'test_lzs.csv')
+def filePath = FilePath.absolutize()
+// def testLzFromFile = readFile(file: 'test_lzs.csv')
 String choices = populateChoices(testLzs)
 
 properties([
@@ -173,7 +174,8 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    println "test:" testLzFromFile
+                    // println "test:" testLzFromFile
+                    println filePath
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
                     List patchingLzs = []
