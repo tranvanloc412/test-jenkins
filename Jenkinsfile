@@ -106,7 +106,7 @@ String nonprodLzFile = "nonprod_lzs.csv"
 
 
 
-List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
+// List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String testLzsFile = "test_lzs.csv"
 
 // def filePath = FilePath.absolutize()
