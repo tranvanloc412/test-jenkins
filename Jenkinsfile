@@ -189,8 +189,7 @@ pipeline {
                 script {
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
-                    println chosenEnv
-                    println chosenLzsStr
+                    
                     List patchingLzs = []
                
                     switch(chosenEnv) {
@@ -203,6 +202,8 @@ pipeline {
                             patchingLzs = []
                             break
                         case envs.TEST:
+                            println chosenEnv
+                            println chosenLzsStr
                             List chosenLzs = convertStringToList(chosenLzsStr)
                             patchingLzs = getChosenLzsInfo(files.TEST, chosenLzs)
                             break
