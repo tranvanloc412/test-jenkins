@@ -65,7 +65,7 @@ def getChosenLzsInfo(file, chosenLzs = []) {
         lines.split("\n").each {
             List tmp = splitString(it)
             println "tmp: ${tmp}"
-            if (chosenLzs.contains(tmp.get(0))) {
+            if (chosenLzs.contains(tmp.get(1))) {
                 accounts.add(tmp)
             }
         }
@@ -207,7 +207,6 @@ pipeline {
                             patchingLzs = getChosenLzsInfo(files.TEST, chosenLzs)
                             break
                         default:
-                            // patchingLzs = []
                             break
                     }
 
