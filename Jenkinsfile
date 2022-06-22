@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-import hudson.FilePath;
+// import hudson.FilePath;
 import groovy.transform.Field;
 
 def envs = [
