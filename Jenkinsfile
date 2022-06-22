@@ -172,6 +172,26 @@ properties([
                     script: jobChoices
                 ]
             ]
+        ],
+        [
+            $class: 'DynamicReferenceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            description: 'LZ_ACTION for deploy_ssm_documents and deploy_iam_role',
+            name: 'LZ_ACTION',
+            referencedParameters: 'ENVIRONMENT',
+            script: [
+                $class: 'GroovyScript',
+                fallbackScript: [
+                    classpath: [], 
+                    sandbox: true, 
+                    script: 'return "ERROR"'
+                ],
+                script: [
+                    classpath: [], 
+                    sandbox: true, 
+                    script: jobChoices
+                ]
+            ]
         ]
     ])
 ])
