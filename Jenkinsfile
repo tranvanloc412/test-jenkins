@@ -100,27 +100,11 @@ def splitString(string) {
     return string.replaceAll("\\s","").split(",")
 }
 
-// def populateChoices() {
-//     def testLzs = getLzShortNames(files.TEST)
-
-//     return """
-// if (ENVIRONMENT == '$envs.TEST') { 
-//     return $testLzs
-// }
-// else if (ENVIRONMENT == ('$envs.NONPROD')) {
-//     return ['${files.NONPROD}']
-// }
-// else {
-//     return ['ERROR']
-// }
-// """.stripIndent()
-// }
-
 def populateChoices() {
     def testLzs = getLzShortNames(files.TEST)
 
     return """
-switch(chosenEnv)
+switch(chosenEnv) {
     case '$envs.TEST':
         return $testLzs
     case '$envs.NONPROD':
@@ -129,26 +113,9 @@ switch(chosenEnv)
         return ['${files.PROD}']
     default:
         return ['ERROR']
+}
 """.stripIndent()
 }
-
-// switch(chosenEnv) {
-//     case envs.NONPROD:
-//         if(chosenLzsStr != "") {
-//             patchingLzs = getLzsInfoFromFile(files.NONPROD)
-//         }
-//         break
-//     case envs.PROD:
-//         patchingLzs = []
-//         break
-//     case  envs.TEST:
-//         List chosenLzs = convertStringToList(chosenLzsStr)
-//         patchingLzs = getChosenLzsInfo(files.TEST, chosenLzs)
-//         break
-//     default:
-//         patchingLzs = []
-//         break
-// }
 
 properties([
     parameters([
@@ -162,11 +129,6 @@ properties([
             referencedParameters: 'ENVIRONMENT',
             script: [
                 $class: 'GroovyScript',
-                // fallbackScript: [
-                //     classpath: [], 
-                //     sandbox: true, 
-                //     script: 'return ["ERROR"]'
-                // ],
                 script: [
                     classpath: [], 
                     sandbox: true, 
