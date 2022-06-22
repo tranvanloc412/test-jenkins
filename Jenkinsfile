@@ -13,9 +13,12 @@ def envs = [
 
 @Field
 def files = [
-    NONPROD : "${env.WORKSPACE}/nonprod_lzs.csv",
-    PROD : "${env.WORKSPACE}/prod_lzs.csv",
-    TEST : "${env.WORKSPACE}/test_lzs.csv"
+    // NONPROD : "${env.WORKSPACE}/nonprod_lzs.csv",
+    // PROD : "${env.WORKSPACE}/prod_lzs.csv",
+    // TEST : "${env.WORKSPACE}/test_lzs.csv"
+    NONPROD : "nonprod_lzs.csv",
+    PROD : "prod_lzs.csv",
+    TEST : "test_lzs.csv"
 ]
 
 String environments =  "${envs.TEST}\n${envs.NONPROD}\n${envs.PROD}"
