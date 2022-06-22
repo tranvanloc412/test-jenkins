@@ -267,7 +267,7 @@ pipeline {
                         println it
                     }
 
-                    println "Release Job": releaseJob
+                    println "Release Job": releaseJobPath
     
                    
                     def parallelStagesMap = [:]
