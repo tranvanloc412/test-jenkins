@@ -90,11 +90,11 @@ def convertStringToList(string) {
     return Arrays.asList(string.split("\\s*,\\s*"))
 }
 
-def getID(lz) {
+def getID(List lz) {
     return lz.get(0)
 }
 
-def getShortName(lz) {
+def getShortName(List lz) {
     return lz.get(1)
 }
 
@@ -194,7 +194,6 @@ pipeline {
                 script {
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
-                    
                     List patchingLzs = []
                
                     switch(chosenEnv) {
