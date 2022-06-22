@@ -1,9 +1,6 @@
 #!/usr/bin/env groovy
 import groovy.transform.Field;
 
-// def workspace = pwd()
-// println workspace
-
 @Field
 def envs = [
     NONPROD : "nonprod",
@@ -13,9 +10,6 @@ def envs = [
 
 @Field
 def files = [
-    // NONPROD : "${env.WORKSPACE}/nonprod_lzs.csv",
-    // PROD : "${env.WORKSPACE}/prod_lzs.csv",
-    // TEST : "${env.WORKSPACE}/test_lzs.csv"
     NONPROD : "nonprod_lzs.csv",
     PROD : "prod_lzs.csv",
     TEST : "test_lzs.csv"
@@ -54,7 +48,8 @@ def getLzShortNames(file) {
     node {
         String fileContents = readFile "${file}"
         lines = removeEmptyLines(fileContents)
-        List lzs = []
+        List accounts = []
+
         lines.split("\n").each {
             List line = splitString(it)
             accounts.add("\"${line.get(1)}\"")
@@ -68,6 +63,7 @@ def getLzsInfoFromFile(file) {
     String fileContents = readFile "${file}"
     lines = removeEmptyLines(fileContents)
     List accounts = []
+
     lines.split("\n").each {
         accounts.add(tmp)
     }
@@ -79,7 +75,8 @@ def getChosenLzsInfo(file, chosenLzs = []) {
     String fileContents = readFile "${file}"
     lines = removeEmptyLines(fileContents)
     List accounts = []
-    if(!chosenLzs.isEmpty()) {
+
+    if( !chosenLzs.isEmpty() ) {
         lines.split("\n").each {
             List tmp = splitString(it)
             if (chosenLzs.contains(tmp.get(0))) {
@@ -108,10 +105,10 @@ def populateChoices() {
 
     return """
 if (ENVIRONMENT == $envs.TEST) { 
-    return $lzs
+    return $testLzs
 }
 else if (ENVIRONMENT == ('nonprod')) {
-    return ['nonprod_lzs.csv']
+    return ['${files.NONPROD}']
 }
 else {
     return ['ERROR']
