@@ -157,7 +157,7 @@ properties([
             description: 'Additional Parameters for Release Jobs',
             filterLength: 10,
             filterable: false,
-            name: 'ADDITIONAL_PARAMETERS',
+            name: 'ADD_PARAMS',
             referencedParameters: 'JOBS',
             script: [
                 $class: 'GroovyScript',
@@ -218,7 +218,7 @@ pipeline {
             steps {
                 script {
                     String chosenEnv = "${params.ENVIRONMENT}"
-                    String chosenLzsStr = "${params.LANDINGZONES}"
+                    String chosenLzsStr = "${params.LANDING_ZONES}"
                     List patchingLzs = []
 
                     String releaseJob = "${params.RELEASEJOB}"
