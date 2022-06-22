@@ -44,7 +44,7 @@ def getLzShortNames(file) {
 }
 
 def getLzsInfo(file) {
-    String fileContents = readFile "${env.WORKSPACE}/${file}"
+    String fileContents = readFile "${file}"
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     List accounts = []
     lines.split("\n").each {
@@ -91,11 +91,12 @@ else {
 String environments = "test\nnonprod\nprod"
 
 String nonprodLzFile = "nonprod_lzs.csv"
-String testLzFromFile = getLzShortNames("${env.WORKSPACE}/test_lzs.csv")
+
 
 
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String testLzsFile = "test_lzs.csv"
+String testLzFromFile = getLzShortNames(testLzsFile)
 String choices = populateChoices(testLzs)
 
 properties([
