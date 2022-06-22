@@ -1,12 +1,21 @@
 #!/usr/bin/env groovy
-// import hudson.FilePath;
 import groovy.transform.Field;
 
+@Field
 def envs = [
     NONPROD : "nonprod",
     PROD : "prod",
     TEST : "test"
 ]
+
+@Field
+def files = [
+    NONPROD : "nonprod_lzs.csv",
+    PROD : "prod_lzs.csv",
+    TEST : "test_lzs.csv"
+]
+
+String environments =  "${envs.TEST}\n${envs.NONPROD}\n${envs.PROD}"
 
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
     def params = [
@@ -42,13 +51,10 @@ def getLzShortNames(file) {
         List lzs = []
         lines.split("\n").each {
             List line = it.replaceAll("\\s","").split(",")
-            lzs.add("\"${line.get(1)}\"")
-        }
-        lzs.each {
-            println it
+            accounts.add("\"${line.get(1)}\"")
         }
 
-        return lzs
+        return accounts
     }
 }
 
@@ -83,13 +89,12 @@ def convertStringToList(string) {
     return Arrays.asList(string.split("\\s*,\\s*"))
 }
 
-def populateChoices(file) {
-// def populateChoices(testLzs) {
-    def testLzs = getLzShortNames(file)
-    println "LZs: ${testLzs}" 
+def populateChoices() {
+    def testLzs = getLzShortNames(files.TEST)
+
     return """
-if (ENVIRONMENT == ('test')) { 
-    return $testLzs
+if (ENVIRONMENT == $envs.TEST) { 
+    return $lzs
 }
 else if (ENVIRONMENT == ('nonprod')) {
     return ['nonprod_lzs.csv']
@@ -100,13 +105,13 @@ else {
 """.stripIndent()
 }
 
-String environments = "test\nnonprod\nprod"
+// String environments = "test\nnonprod\nprod"
 
-String nonprodLzFile = "nonprod_lzs.csv"
+// String nonprodLzFile = "nonprod_lzs.csv"
 
-String testLzsFile = "test_lzs.csv"
+// String testLzsFile = "test_lzs.csv"
 
-String choices = populateChoices(testLzsFile)
+// String choices = populateChoices(files)
 
 properties([
     parameters([
@@ -128,7 +133,7 @@ properties([
                 script: [
                     classpath: [], 
                     sandbox: true, 
-                    script: choices
+                    script: populateChoices()
                 ]
             ]
         ]
@@ -182,8 +187,6 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
-                    // println "test:" testLzFromFile
-                    // println filePath
                     String chosenEnv = "${params.ENVIRONMENT}"
                     String chosenLzsStr = "${params.LANDINGZONES}"
                     List patchingLzs = []
