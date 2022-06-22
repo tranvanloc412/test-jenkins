@@ -50,7 +50,7 @@ def getLzsInfoFromFile(file) {
     List accounts = []
 
     lines.split("\n").each {
-        List tmp = splitString(it)
+        List tmp = splitStringToList(it)
         accounts.add(tmp)
     } 
     return accounts
@@ -63,9 +63,8 @@ def getChosenLzsInfo(file, chosenLzs = []) {
 
     if( !chosenLzs.isEmpty() ) {
         lines.split("\n").each {
-            List tmp = splitString(it)
-            println "tmp: ${tmp}"
-            if (chosenLzs.contains(tmp.get(1))) {
+            List tmp = splitStringToList(it)
+            if (chosenLzs.contains(getShortNameInList(tmp))) {
                 accounts.add(tmp)
             }
         }
@@ -80,8 +79,8 @@ def getLzShortNames(file) {
         List accounts = []
 
         lines.split("\n").each {
-            List line = splitString(it)
-            accounts.add("\"${line.get(1)}\"")
+            List tmp = splitStringToList(it)
+            accounts.add("\"${getShortNameInList(lz)}\"")
         }
         return accounts
     }
@@ -91,11 +90,15 @@ def convertStringToList(string) {
     return Arrays.asList(string.split("\\s*,\\s*"))
 }
 
+def getShortNameInList(lz) {
+    return lz.get(1)
+}
+
 def removeEmptyLines(content) {
     return content.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
 }
 
-def splitString(string) {
+def splitStringToList(string) {
     return string.replaceAll("\\s","").split(",")
 }
 
@@ -200,9 +203,6 @@ pipeline {
                             patchingLzs = []
                             break
                         case envs.TEST:
-                            println chosenEnv
-                            println chosenLzsStr
-                            println files.TEST
                             List chosenLzs = convertStringToList(chosenLzsStr)
                             patchingLzs = getChosenLzsInfo(files.TEST, chosenLzs)
                             break
