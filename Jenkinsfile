@@ -1,8 +1,8 @@
 #!/usr/bin/env groovy
 import groovy.transform.Field;
 
-def workspace = pwd()
-println workspace
+// def workspace = pwd()
+// println workspace
 
 @Field
 def envs = [
