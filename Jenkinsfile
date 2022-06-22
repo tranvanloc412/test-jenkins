@@ -96,7 +96,7 @@ String nonprodLzFile = "nonprod_lzs.csv"
 
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String testLzsFile = "test_lzs.csv"
-String testLzFromFile = getLzShortNames(testLzsFile)
+String testLzFromFile = readFile "./test_lzs.csv"
 String choices = populateChoices(testLzs)
 
 properties([
