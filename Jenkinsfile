@@ -38,12 +38,15 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 }
 
 def getLzShortNames(file) {
-    String fileContents = readFile "${env.WORKSPACE}/${file}"
-    lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
-    List accounts = []
-    lines.split("\n").each {
-        List tmp = it.replaceAll("\\s","").split(",")
-        accounts.add(tmp)
+    node {
+        String fileContents = readFile "${env.WORKSPACE}/${file}"
+        lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+        List accounts = []
+        lines.split("\n").each {
+            List tmp = it.replaceAll("\\s","").split(",")
+            accounts.add(tmp)
+        }
+        return accounts
     }
 }
 
@@ -103,7 +106,7 @@ String testLzsFile = "test_lzs.csv"
 
 // def filePath = FilePath.absolutize()
 
-def testLzFromFile = readFile "${env.WORKSPACE}/test_lzs.csv"
+def testLzFromFile = getLzShortNames(testLzsFile)
 String choices = populateChoices(testLzs)
 
 properties([
