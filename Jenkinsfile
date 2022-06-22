@@ -41,12 +41,12 @@ def getLzShortNames(file) {
     node {
         String fileContents = readFile "${env.WORKSPACE}/${file}"
         lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
-        List accounts = []
+        List lzs = []
         lines.split("\n").each {
-            List tmp = it.replaceAll("\\s","").split(",")
-            accounts.add(tmp)
+            List shortName = it.replaceAll("\\s","").split(",").get(1)
+            lzs.add("\"${shortName}\"")
         }
-        accounts.each {
+        lzs.each {
             println it
         }
         // return accounts
