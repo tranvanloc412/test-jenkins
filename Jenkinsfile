@@ -85,7 +85,7 @@ def convertStringToList(string) {
 
 def populateChoices(file) {
 // def populateChoices(testLzs) {
-    def testLzs = getLzShortNames(file)
+    def testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
     println "LZs: " testLzs
     return """
 if (ENVIRONMENT == ('test')) { 
