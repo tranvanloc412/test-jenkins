@@ -17,33 +17,31 @@ def files = [
 
 String environments =  "${envs.TEST}\n${envs.NONPROD}\n${envs.PROD}"
 
-def convertStringToList(string) {
-    return Arrays.asList(string.split("\\s*,\\s*"))
-}
+def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
+    def params = [
+      "AWS_Access_Key" : "${awsAccessKey}",
+      "AWS_Secret_Key": "${awsSecretKey}",
+      "AWS_Access_Token": "${awsAccessToken}",
+      "LZ_ID": "${lzId}",
+      "LZ_SHORTNAME": "${lzShortName}",
+      "LZ_Schedule": "${lzSchedule}"
+    ]
 
-def removeEmptyLines(content) {
-    return content.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
-}
+    List listParams = []
+    params.each {
+        listParams.add([$class: 'StringParameterValue', name: "${it.key}", value: "${it.value}"])
+    }
 
-def splitString(string) {
-    return string.replaceAll("\\s","").split(",")
-}
-
-def populateChoices() {
-    def testLzs = getLzShortNames(files.TEST)
-
-    return """
-switch(ENVIRONMENT) {
-    case '$envs.TEST':
-        return $testLzs
-    case '$envs.NONPROD':
-        return ['${files.NONPROD}']
-    case '$envs.PROD':
-        return ['${files.PROD}']
-    default:
-        return ['ERROR']
-}
-""".stripIndent()
+    return {
+        stage("${lzShortName}") {
+            def jobBuild = build job: "${releaseJob}", parameters: listParams, propagate: false
+            def rs = jobBuild.getResult()
+            echo "Pathching status on ${lzShortName} is: ${rs}"
+            if(rs != "SUCCESS") {
+                currentBuild.result = 'UNSTABLE'
+            }
+        }
+    }
 }
 
 def getLzsInfoFromFile(file) {
@@ -91,31 +89,33 @@ def getLzShortNames(file) {
     }
 }
 
-def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
-    def params = [
-      "AWS_Access_Key" : "${awsAccessKey}",
-      "AWS_Secret_Key": "${awsSecretKey}",
-      "AWS_Access_Token": "${awsAccessToken}",
-      "LZ_ID": "${lzId}",
-      "LZ_SHORTNAME": "${lzShortName}",
-      "LZ_Schedule": "${lzSchedule}"
-    ]
+def convertStringToList(string) {
+    return Arrays.asList(string.split("\\s*,\\s*"))
+}
 
-    List listParams = []
-    params.each {
-        listParams.add([$class: 'StringParameterValue', name: "${it.key}", value: "${it.value}"])
-    }
+def removeEmptyLines(content) {
+    return content.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+}
 
-    return {
-        stage("${lzShortName}") {
-            def jobBuild = build job: "${releaseJob}", parameters: listParams, propagate: false
-            def rs = jobBuild.getResult()
-            echo "Pathching status on ${lzShortName} is: ${rs}"
-            if(rs != "SUCCESS") {
-                currentBuild.result = 'UNSTABLE'
-            }
-        }
-    }
+def splitString(string) {
+    return string.replaceAll("\\s","").split(",")
+}
+
+def populateChoices() {
+    def testLzs = getLzShortNames(files.TEST)
+
+    return """
+switch(ENVIRONMENT) {
+    case '$envs.TEST':
+        return $testLzs
+    case '$envs.NONPROD':
+        return ['${files.NONPROD}']
+    case '$envs.PROD':
+        return ['${files.PROD}']
+    default:
+        return ['ERROR']
+}
+""".stripIndent()
 }
 
 properties([
@@ -225,7 +225,7 @@ pipeline {
                                                           "${params.LZ_Schedule}"
                                                       )
                     }
-                    
+
                     parallel parallelStagesMap
                 }
             }
