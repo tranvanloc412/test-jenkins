@@ -43,15 +43,14 @@ def getLzShortNames(file) {
         lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
         List lzs = []
         lines.split("\n").each {
-            List shortName = it.replaceAll("\\s","").split(",")
-            println shortName.getClass()
+            List line = it.replaceAll("\\s","").split(",")
             lzs.add("\"${shortName.get(1)}\"")
         }
         lzs.each {
             println it
         }
         // return accounts
-        return ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
+        return lzs
     }
 }
 
