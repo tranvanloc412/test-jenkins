@@ -1,34 +1,9 @@
 #!/usr/bin/env groovy
-import groovy.transform.Field
 
-@Field
 def envs = [
     NONPROD : "nonprod",
     PROD : "prod",
     TEST : "test"
-]
-
-@Field
-def jobs = [
-    TEST: "test_job",
-    DEPLOYSSM: "deploy_ssm_documents",
-    DEPLOYIAMROLE: "deploy_iam_role",
-    STARTEC2: "start_instances",
-    SCHEDULE: "schedule_patching"
-]
-
-@Field
-def jobPath = [
-    TEST: "test/ReleaseJob",
-    DEPLOYSSM: "test/ReleaseJob",
-    DEPLOYIAMROLE: "test/ReleaseJob",
-    STARTEC2: "test/ReleaseJob",
-    SCHEDULE: "test/ReleaseJob"
-]
-
-@Field
-def jobAddParams = [
-    LZ_ACTION: ['CHECK', 'ADD', 'DELETE']
 ]
 
 def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, lzShortName, lzSchedule) {
@@ -91,10 +66,10 @@ def convertStringToList(string) {
 
 def populateChoices(testLzs) {
   return """
-if (ENVIRONMENT == '$envs.TEST') { 
+if (ENVIRONMENT == ('test')) { 
     return $testLzs
 }
-else if (ENVIRONMENT == '$envs.NONPROD') {
+else if (ENVIRONMENT == ('nonprod')) {
     return ['nonprod_lzs.csv']
 }
 else {
@@ -103,29 +78,15 @@ else {
 """.stripIndent()
 }
 
-def populateParams(params) {
-  return """
-if (RELEASEJOB == 'test') { 
-    return $params.LZ_ACTION
-}
-else if (RELEASEJOB == 'nonprod') {
-    return ['nonprod_lzs.csv']
-}
-else {
-    return ['ERROR']
-}
-""".stripIndent()
-}
-
-String displayEnvs = "${envs.TEST}\n${envs.NONPROD}\n${envs.PROD}"
-String displayJobs = "${jobs.TEST}\n${jobs.DEPLOYSSM}\n${jobs.DEPLOYIAMROLE}\n${jobs.STARTEC2}\n${jobs.SCHEDULE}"
+String environments = "test\nnonprod\nprod"
 
 String nonprodLzFile = "nonprod_lzs.csv"
+String testLzFromFile = readFile "${env.WORKSPACE}/test_lzs.csv"
+
 
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String testLzsFile = "test_lzs.csv"
-String envChoices = populateChoices(testLzs)
-String jobChoices = populateChoices(jobAddParams)
+String choices = populateChoices(testLzs)
 
 properties([
     parameters([
@@ -135,61 +96,19 @@ properties([
             description: 'Select Landing Zones to patch',
             filterLength: 10,
             filterable: true,
-            name: 'LANDING_ZONES',
-            referencedParameters: 'ENVIRONMENT',
-            script: [
-                $class: 'GroovyScript',
-                fallbackScript: [
-                    classpath: [], 
-                    sandbox: true,
-                    script: "return ['ERROR']"
-                ],
-                script: [
-                    classpath: [], 
-                    sandbox: true, 
-                    script: envChoices
-                ]
-            ]
-        ],
-        [
-            $class: 'CascadeChoiceParameter', 
-            choiceType: 'PT_SINGLE_SELECT',
-            description: 'Additional Parameters for Release Jobs',
-            filterLength: 10,
-            filterable: false,
-            name: 'ADD_PARAMS',
-            referencedParameters: 'JOBS',
-            script: [
-                $class: 'GroovyScript',
-                fallbackScript: [
-                    classpath: [], 
-                    sandbox: true, 
-                    script: 'return "ERROR"'
-                ],
-                script: [
-                    classpath: [], 
-                    sandbox: true, 
-                    script: jobChoices
-                ]
-            ]
-        ],
-        [
-            $class: 'DynamicReferenceParameter',
-            choiceType: 'PT_SINGLE_SELECT',
-            description: 'LZ_ACTION for deploy_ssm_documents and deploy_iam_role',
-            name: 'LZ_ACTION',
+            name: 'LANDINGZONES',
             referencedParameters: 'ENVIRONMENT',
             script: [
                 $class: 'GroovyScript',
                 fallbackScript: [
                     classpath: [], 
                     sandbox: true, 
-                    script: 'return "ERROR"'
+                    script: 'return ["ERROR"]'
                 ],
                 script: [
                     classpath: [], 
                     sandbox: true, 
-                    script: jobChoices
+                    script: choices
                 ]
             ]
         ]
@@ -197,7 +116,9 @@ properties([
 ])
 
 pipeline {
-    agent { label 'tooling' }
+    agent {
+        label 'tooling'
+    }
 
     parameters {
         string(
@@ -219,13 +140,17 @@ pipeline {
             trim: true
         )
         string(
+            name: 'Release_Job',
+            defaultValue: 'test/ReleaseJob',
+            description: 'Jenkins job to call',
+        )
+        string(
             name: 'LZ_Schedule',
             defaultValue: '1970-01-01T00:01',
             description: 'When to schedule patching. THIS IS IN GMT/UTC',
             trim: true
         )
-        choice(name: 'ENVIRONMENT', choices: "${displayEnvs}")
-        choice(name: 'RELEASEJOB', choices: "${displayJobs}")
+        choice(name: 'ENVIRONMENT', choices: "${environments}")
     }
 
     options {
@@ -237,12 +162,10 @@ pipeline {
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
+                    println "test:" testLzFromFile
                     String chosenEnv = "${params.ENVIRONMENT}"
-                    String chosenLzsStr = "${params.LANDING_ZONES}"
+                    String chosenLzsStr = "${params.LANDINGZONES}"
                     List patchingLzs = []
-
-                    String releaseJob = "${params.RELEASEJOB}"
-                    String releaseJobPath = ""
                
                     switch(chosenEnv) {
                         case envs.NONPROD:
@@ -261,38 +184,15 @@ pipeline {
                             patchingLzs = []
                             break
                     }
-                    // test run parrelel
-                    switch(releaseJob) {
-                        case jobs.TEST:
-                            releaseJobPath = jobPath.TEST
-                            break
-                        case jobs.DEPLOYSSM:
-                            releaseJobPath = jobPath.DEPLOYSSM
-                            break
-                        case jobs.DEPLOYIAMROLE:
-                            releaseJobPath = jobPath.DEPLOYIAMROLE
-                            break
-                        case jobs.STARTEC2:
-                            releaseJobPath = jobPath.STARTEC2
-                            break
-                        case jobs.SCHEDULE:
-                            releaseJobPath = jobPath.SCHEDULE
-                            break
-                        default:
-                            break
-                    }
 
                     println "Landing Zones to be patched"
                     patchingLzs.each {
                         println it
                     }
-
-                    println "Release Job": releaseJobPath
-    
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
-                        parallelStagesMap[lz.get(0)] = generateStage(releaseJobPath,
+                        parallelStagesMap[lz.get(0)] = generateStage("${params.Release_Job}",
                                                           "${params.AWS_Access_Key}",
                                                           "${params.AWS_Secret_Key}",
                                                           "${params.AWS_Access_Token}",
