@@ -52,8 +52,7 @@ def getLzsInfoFromFile(file) {
     lines.split("\n").each {
         List tmp = splitString(it)
         accounts.add(tmp)
-    }
-    
+    } 
     return accounts
 }
 
@@ -70,7 +69,6 @@ def getChosenLzsInfo(file, chosenLzs = []) {
             }
         }
     }
-
     return accounts
 }
 
@@ -84,7 +82,6 @@ def getLzShortNames(file) {
             List line = splitString(it)
             accounts.add("\"${line.get(1)}\"")
         }
-
         return accounts
     }
 }
@@ -204,6 +201,7 @@ pipeline {
                         case envs.TEST:
                             println chosenEnv
                             println chosenLzsStr
+                            println files.TEST
                             List chosenLzs = convertStringToList(chosenLzsStr)
                             patchingLzs = getChosenLzsInfo(files.TEST, chosenLzs)
                             break
@@ -228,7 +226,6 @@ pipeline {
                                                           "${params.LZ_Schedule}"
                                                       )
                     }
-
                     parallel parallelStagesMap
                 }
             }
