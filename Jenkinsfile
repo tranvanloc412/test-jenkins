@@ -80,7 +80,7 @@ def getLzShortNames(file) {
 
         lines.split("\n").each {
             List tmp = splitStringToList(it)
-            accounts.add("\"${getShortNameInList(lz)}\"")
+            accounts.add("\"${getShortNameInList(tmp)}\"")
         }
         return accounts
     }
