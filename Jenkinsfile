@@ -225,6 +225,7 @@ pipeline {
                                                           "${params.LZ_Schedule}"
                                                       )
                     }
+                    
                     parallel parallelStagesMap
                 }
             }
