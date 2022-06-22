@@ -104,10 +104,10 @@ def populateChoices() {
     def testLzs = getLzShortNames(files.TEST)
 
     return """
-if (ENVIRONMENT == $envs.TEST) { 
+if (ENVIRONMENT == '$envs.TEST') { 
     return $testLzs
 }
-else if (ENVIRONMENT == ('nonprod')) {
+else if (ENVIRONMENT == ('$envs.NONPROD')) {
     return ['${files.NONPROD}']
 }
 else {
