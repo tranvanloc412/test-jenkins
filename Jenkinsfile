@@ -33,12 +33,22 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
     }
 }
 
+def getLzShortNames(file) {
+    String fileContents = readFile "${env.WORKSPACE}/${file}"
+    lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+    List accounts = []
+    lines.split("\n").each {
+        List tmp = it.replaceAll("\\s","").split(",")
+        accounts.add(tmp)
+    }
+}
+
 def getLzsInfo(file) {
     String fileContents = readFile "${env.WORKSPACE}/${file}"
     lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
     List accounts = []
     lines.split("\n").each {
-        accounts.add(it.replaceAll("\\s","").split(",") as List)
+        accounts.add(tmp)
     }
     
     return accounts
@@ -81,7 +91,7 @@ else {
 String environments = "test\nnonprod\nprod"
 
 String nonprodLzFile = "nonprod_lzs.csv"
-String testLzFromFile = readFile "${env.WORKSPACE}/test_lzs.csv"
+String testLzFromFile = getLzShortNames("${env.WORKSPACE}/test_lzs.csv")
 
 
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
