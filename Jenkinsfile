@@ -114,7 +114,7 @@ properties([
             $class: 'CascadeChoiceParameter', 
             choiceType: 'PT_MULTI_SELECT',
             description: 'Select Landing Zones to patch',
-            filterLength: 10,
+            filterLength: 1,
             filterable: true,
             name: 'LANDINGZONES',
             referencedParameters: 'ENVIRONMENT',
