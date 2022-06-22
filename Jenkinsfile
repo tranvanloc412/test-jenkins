@@ -198,11 +198,6 @@ pipeline {
             description: 'Your AWS Token for HIPCMSProvisionSpokeRole on CMS HUB account',
             trim: true
         )
-        // string(
-        //     name: 'Release_Job',
-        //     defaultValue: 'test/ReleaseJob',
-        //     description: 'Jenkins job to call',
-        // )
         string(
             name: 'LZ_Schedule',
             defaultValue: '1970-01-01T00:01',
@@ -246,7 +241,7 @@ pipeline {
                             patchingLzs = []
                             break
                     }
-
+                    // test run parrelel
                     switch(releaseJob) {
                         case jobs.TEST:
                             releaseJobPath = jobPath.TEST
@@ -271,6 +266,9 @@ pipeline {
                     patchingLzs.each {
                         println it
                     }
+
+                    println "Release Job": releaseJob
+    
                    
                     def parallelStagesMap = [:]
                     for (lz in patchingLzs) {
