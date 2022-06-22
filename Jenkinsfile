@@ -45,7 +45,7 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 }
 
 def getLzsInfoFromFile(file) {
-    String fileContents = readFile "${file}"
+    String fileContents = readFile "${env.WORKSPACE}/${file}"
     lines = removeEmptyLines(fileContents)
     List accounts = []
 
@@ -57,7 +57,7 @@ def getLzsInfoFromFile(file) {
 }
 
 def getChosenLzsInfo(file, chosenLzs = []) {
-    String fileContents = readFile "${file}"
+    String fileContents = readFile "${env.WORKSPACE}/${file}"
     lines = removeEmptyLines(fileContents)
     List accounts = []
 
@@ -75,7 +75,7 @@ def getChosenLzsInfo(file, chosenLzs = []) {
 
 def getLzShortNames(file) {
     node {
-        String fileContents = readFile "${file}"
+        String fileContents = readFile "${env.WORKSPACE}/${file}"
         lines = removeEmptyLines(fileContents)
         List accounts = []
 
