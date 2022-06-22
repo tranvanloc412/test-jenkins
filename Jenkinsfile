@@ -10,9 +10,9 @@ def envs = [
 
 @Field
 def files = [
-    NONPROD : "nonprod_lzs.csv",
-    PROD : "prod_lzs.csv",
-    TEST : "test_lzs.csv"
+    NONPROD : "${env.WORKSPACE}/nonprod_lzs.csv",
+    PROD : "${env.WORKSPACE}/prod_lzs.csv",
+    TEST : "${env.WORKSPACE}/test_lzs.csv"
 ]
 
 String environments =  "${envs.TEST}\n${envs.NONPROD}\n${envs.PROD}"
@@ -46,11 +46,11 @@ def generateStage(releaseJob, awsAccessKey, awsSecretKey, awsAccessToken, lzId, 
 
 def getLzShortNames(file) {
     node {
-        String fileContents = readFile "${env.WORKSPACE}/${file}"
-        lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+        String fileContents = readFile "${file}"
+        lines = removeEmptyLines(fileContents)
         List lzs = []
         lines.split("\n").each {
-            List line = it.replaceAll("\\s","").split(",")
+            List line = splitString(it)
             accounts.add("\"${line.get(1)}\"")
         }
 
@@ -58,9 +58,9 @@ def getLzShortNames(file) {
     }
 }
 
-def getLzsInfo(file) {
+def getLzsInfoFromFile(file) {
     String fileContents = readFile "${file}"
-    lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+    lines = removeEmptyLines(fileContents)
     List accounts = []
     lines.split("\n").each {
         accounts.add(tmp)
@@ -69,13 +69,13 @@ def getLzsInfo(file) {
     return accounts
 }
 
-def getTestLzsInfo(file, chosenLzs = []) {
-    String fileContents = readFile "${env.WORKSPACE}/${file}"
-    lines = fileContents.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+def getChosenLzsInfo(file, chosenLzs = []) {
+    String fileContents = readFile "${file}"
+    lines = removeEmptyLines(fileContents)
     List accounts = []
     if(!chosenLzs.isEmpty()) {
         lines.split("\n").each {
-            List tmp = it.replaceAll("\\s","").split(",")
+            List tmp = splitString(it)
             if (chosenLzs.contains(tmp.get(0))) {
                 accounts.add(tmp)
             }
@@ -87,6 +87,14 @@ def getTestLzsInfo(file, chosenLzs = []) {
 
 def convertStringToList(string) {
     return Arrays.asList(string.split("\\s*,\\s*"))
+}
+
+def removeEmptyLines(content) {
+    return content.replaceAll("(?m)^\\s*\\r?\\n|\\r?\\n\\s*(?!.*\\r?\\n)", "")
+}
+
+def splitString(string) {
+    return string.replaceAll("\\s","").split(",")
 }
 
 def populateChoices() {
@@ -194,7 +202,7 @@ pipeline {
                     switch(chosenEnv) {
                         case envs.NONPROD:
                             if(chosenLzsStr != "") {
-                                patchingLzs = getLzsInfo(nonprodLzFile)
+                                patchingLzs = getLzsInfoFromFile(files.NONPROD)
                             }
                             break
                         case envs.PROD:
