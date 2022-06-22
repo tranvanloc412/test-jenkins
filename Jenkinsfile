@@ -213,7 +213,7 @@ pipeline {
                             break
                         case  envs.TEST:
                             List chosenLzs = convertStringToList(chosenLzsStr)
-                            patchingLzs = getTestLzsInfo(testLzsFile, chosenLzs)
+                            patchingLzs = getTestLzsInfo(files.TEST, chosenLzs)
                             break
                         default:
                             patchingLzs = []
