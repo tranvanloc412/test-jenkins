@@ -1,6 +1,8 @@
 #!/usr/bin/env groovy
+import hudson.*
+import groovy.transform.Field
 
-env.WORKSPACE = pwd()
+// env.WORKSPACE = pwd()
 
 def envs = [
     NONPROD : "nonprod",
@@ -98,7 +100,9 @@ String nonprodLzFile = "nonprod_lzs.csv"
 
 List testLzs = ["\"lz1\"","\"lz2\"","\"lz3\"","\"lz4\"","\"lz5\""]
 String testLzsFile = "test_lzs.csv"
+
 // def filePath = FilePath.absolutize()
+
 def testLzFromFile = readFile "${env.WORKSPACE}/test_lzs.csv"
 String choices = populateChoices(testLzs)
 
