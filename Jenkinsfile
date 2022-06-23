@@ -191,13 +191,13 @@ pipeline {
 
 
     stages {
-        stage('init') {
-            steps {
-                script {
-                    def choices = populateChoices()
-                }
-            }
-        }
+        // stage('init') {
+        //     steps {
+        //         script {
+        //             def choices = populateChoices()
+        //         }
+        //     }
+        // }
 
         stage('Parameters') {
             steps {
@@ -247,7 +247,7 @@ pipeline {
                                     script: [
                                         classpath: [], 
                                         sandbox: true, 
-                                        script: choices
+                                        script: populateChoices()
                                     ]
                                 ]
                             ]
