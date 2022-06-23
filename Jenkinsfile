@@ -12,7 +12,7 @@ def envs = [
 def files = [
     NONPROD : "nonprod_lzs.csv",
     PROD : "prod_lzs.csv",
-    TEST : "test_lzs.csv"
+    TEST : "testLzs.csv"
 ]
 
 String environments =  "${envs.TEST}\n${envs.NONPROD}\n${envs.PROD}"
