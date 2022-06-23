@@ -12,7 +12,7 @@ def envs = [
 def files = [
     NONPROD : "nonprod_lzs.csv",
     PROD : "prod_lzs.csv",
-    TEST : "testLzs.csv"
+    TEST : "test_Lzs.csv"
 ]
 
 String environments =  "${envs.TEST}\n${envs.NONPROD}\n${envs.PROD}"
@@ -110,7 +110,6 @@ def splitStringToList(string) {
 
 def populateChoices() {
     def testLzs = getLzShortNames(files.TEST)
-    // def testLzs = ["\"lz1\"", "\"lz2\""]
 
     return """
 switch(ENVIRONMENT) {
@@ -126,28 +125,6 @@ switch(ENVIRONMENT) {
 """.stripIndent()
 }
 
-// properties([
-//     parameters([
-//         [
-//             $class: 'CascadeChoiceParameter', 
-//             choiceType: 'PT_MULTI_SELECT',
-//             description: 'Select Landing Zones to patch',
-//             filterLength: 1,
-//             filterable: true,
-//             name: 'LANDINGZONES',
-//             referencedParameters: 'ENVIRONMENT',
-//             script: [
-//                 $class: 'GroovyScript',
-//                 script: [
-//                     classpath: [], 
-//                     sandbox: true, 
-//                     script: choices
-//                 ]
-//             ]
-//         ]
-//     ])
-// ])
-
 pipeline {
     agent {
         label 'tooling'
@@ -160,63 +137,63 @@ pipeline {
 
 
     stages {
-        // stage('Parameters') {
-        //     steps {
-        //         script {
-        //             properties([
-            parameters([
-                string(
-                    name: 'AWS_Access_Key',
-                    defaultValue: '',
-                    description: 'Your AWS Access Key for HIPCMSProvisionSpokeRole on CMS HUB account',
-                    trim: true
-                ),
-                string(
-                    name: 'AWS_Secret_Key',
-                    defaultValue: '',
-                    description: 'Your AWS Secret Key for HIPCMSProvisionSpokeRole on CMS HUB account',
-                    trim: true
-                ),
-                string(
-                    name: 'AWS_Access_Token',
-                    defaultValue: '',
-                    description: 'Your AWS Token for HIPCMSProvisionSpokeRole on CMS HUB account',
-                    trim: true
-                ),
-                string(
-                    name: 'Release_Job',
-                    defaultValue: 'test/ReleaseJob',
-                    description: 'Jenkins job to call',
-                ),
-                string(
-                    name: 'LZ_Schedule',
-                    defaultValue: '1970-01-01T00:01',
-                    description: 'When to schedule patching. THIS IS IN GMT/UTC',
-                    trim: true
-                ),
-                choice(name: 'ENVIRONMENT', choices: "${environments}"),
-                [
-                    $class: 'CascadeChoiceParameter', 
-                    choiceType: 'PT_MULTI_SELECT',
-                    description: 'Select Landing Zones to patch',
-                    filterLength: 1,
-                    filterable: true,
-                    name: 'LANDINGZONES',
-                    referencedParameters: 'ENVIRONMENT',
-                    script: [
-                        $class: 'GroovyScript',
-                        script: [
-                            classpath: [], 
-                            sandbox: true, 
-                            script: populateChoices()
-                        ]
-                    ]
-                ]
-            ])
-        // ])
-        //         }
-        //     }
-        // }
+        stage('Parameters') {
+            steps {
+                script {
+                    properties([
+                        parameters([
+                            string(
+                                name: 'AWS_Access_Key',
+                                defaultValue: '',
+                                description: 'Your AWS Access Key for HIPCMSProvisionSpokeRole on CMS HUB account',
+                                trim: true
+                            ),
+                            string(
+                                name: 'AWS_Secret_Key',
+                                defaultValue: '',
+                                description: 'Your AWS Secret Key for HIPCMSProvisionSpokeRole on CMS HUB account',
+                                trim: true
+                            ),
+                            string(
+                                name: 'AWS_Access_Token',
+                                defaultValue: '',
+                                description: 'Your AWS Token for HIPCMSProvisionSpokeRole on CMS HUB account',
+                                trim: true
+                            ),
+                            string(
+                                name: 'Release_Job',
+                                defaultValue: 'test/ReleaseJob',
+                                description: 'Jenkins job to call',
+                            ),
+                            string(
+                                name: 'LZ_Schedule',
+                                defaultValue: '1970-01-01T00:01',
+                                description: 'When to schedule patching. THIS IS IN GMT/UTC',
+                                trim: true
+                            ),
+                            choice(name: 'ENVIRONMENT', choices: "${environments}"),
+                            [
+                                $class: 'CascadeChoiceParameter', 
+                                choiceType: 'PT_MULTI_SELECT',
+                                description: 'Select Landing Zones to patch',
+                                filterLength: 1,
+                                filterable: true,
+                                name: 'LANDINGZONES',
+                                referencedParameters: 'ENVIRONMENT',
+                                script: [
+                                    $class: 'GroovyScript',
+                                    script: [
+                                        classpath: [], 
+                                        sandbox: true, 
+                                        script: populateChoices()
+                                    ]
+                                ]
+                            ]
+                        ])
+                    ])
+                }
+            }
+        }
 
         stage('Execute patching on multiple landing zones') {
             steps {
