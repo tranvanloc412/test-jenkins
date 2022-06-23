@@ -73,7 +73,7 @@ def getChosenLzsInfo(file, chosenLzs = []) {
 }
 
 def getLzShortNames(file) {
-    node {
+    // node {
         // sh 'ls'
         // String fileContents = readFile "${env.WORKSPACE}/${file}"
         String fileContents = readFile "./${file}"
@@ -85,7 +85,7 @@ def getLzShortNames(file) {
             accounts.add("\"${getShortName(tmp)}\"")
         }
         return accounts
-    }
+    // }
 }
 
 def convertStringToList(string) {
