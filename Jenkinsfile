@@ -108,8 +108,8 @@ def splitStringToList(string) {
 }
 
 def populateChoices() {
-    // def testLzs = getLzShortNames(files.TEST)
-    def testLzs = ["\"lz1\"", "\"lz2\""]
+    def testLzs = getLzShortNames(files.TEST)
+    // def testLzs = ["\"lz1\"", "\"lz2\""]
 
     return """
 switch(ENVIRONMENT) {
