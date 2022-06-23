@@ -125,27 +125,27 @@ switch(ENVIRONMENT) {
 """.stripIndent()
 }
 
-properties([
-    parameters([
-        [
-            $class: 'CascadeChoiceParameter', 
-            choiceType: 'PT_MULTI_SELECT',
-            description: 'Select Landing Zones to patch',
-            filterLength: 1,
-            filterable: true,
-            name: 'LANDINGZONES',
-            referencedParameters: 'ENVIRONMENT',
-            script: [
-                $class: 'GroovyScript',
-                script: [
-                    classpath: [], 
-                    sandbox: true, 
-                    script: choices
-                ]
-            ]
-        ]
-    ])
-])
+// properties([
+//     parameters([
+//         [
+//             $class: 'CascadeChoiceParameter', 
+//             choiceType: 'PT_MULTI_SELECT',
+//             description: 'Select Landing Zones to patch',
+//             filterLength: 1,
+//             filterable: true,
+//             name: 'LANDINGZONES',
+//             referencedParameters: 'ENVIRONMENT',
+//             script: [
+//                 $class: 'GroovyScript',
+//                 script: [
+//                     classpath: [], 
+//                     sandbox: true, 
+//                     script: choices
+//                 ]
+//             ]
+//         ]
+//     ])
+// ])
 
 pipeline {
     agent {
@@ -233,7 +233,24 @@ pipeline {
                                 description: 'When to schedule patching. THIS IS IN GMT/UTC',
                                 trim: true
                             ),
-                            choice(name: 'ENVIRONMENT', choices: "${environments}")
+                            choice(name: 'ENVIRONMENT', choices: "${environments}"),
+                            [
+                                $class: 'CascadeChoiceParameter', 
+                                choiceType: 'PT_MULTI_SELECT',
+                                description: 'Select Landing Zones to patch',
+                                filterLength: 1,
+                                filterable: true,
+                                name: 'LANDINGZONES',
+                                referencedParameters: 'ENVIRONMENT',
+                                script: [
+                                    $class: 'GroovyScript',
+                                    script: [
+                                        classpath: [], 
+                                        sandbox: true, 
+                                        script: choices
+                                    ]
+                                ]
+                            ]
                         ])
                     ])
                 }
