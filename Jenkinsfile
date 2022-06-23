@@ -124,6 +124,8 @@ switch(ENVIRONMENT) {
 """.stripIndent()
 }
 
+def choices = populateChoices()
+
 properties([
     parameters([
         [
@@ -139,7 +141,7 @@ properties([
                 script: [
                     classpath: [], 
                     sandbox: true, 
-                    script: populateChoices()
+                    script: choices
                 ]
             ]
         ]
