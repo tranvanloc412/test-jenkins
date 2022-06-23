@@ -209,30 +209,30 @@ pipeline {
                                 defaultValue: '',
                                 description: 'Your AWS Access Key for HIPCMSProvisionSpokeRole on CMS HUB account',
                                 trim: true
-                            )
+                            ),
                             string(
                                 name: 'AWS_Secret_Key',
                                 defaultValue: '',
                                 description: 'Your AWS Secret Key for HIPCMSProvisionSpokeRole on CMS HUB account',
                                 trim: true
-                            )
+                            ),
                             string(
                                 name: 'AWS_Access_Token',
                                 defaultValue: '',
                                 description: 'Your AWS Token for HIPCMSProvisionSpokeRole on CMS HUB account',
                                 trim: true
-                            )
+                            ),
                             string(
                                 name: 'Release_Job',
                                 defaultValue: 'test/ReleaseJob',
                                 description: 'Jenkins job to call',
-                            )
+                            ),
                             string(
                                 name: 'LZ_Schedule',
                                 defaultValue: '1970-01-01T00:01',
                                 description: 'When to schedule patching. THIS IS IN GMT/UTC',
                                 trim: true
-                            )
+                            ),
                             choice(name: 'ENVIRONMENT', choices: "${environments}")
                         ])
                     ])
