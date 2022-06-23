@@ -108,7 +108,8 @@ def splitStringToList(string) {
 }
 
 def populateChoices() {
-    def testLzs = getLzShortNames(files.TEST)
+    // def testLzs = getLzShortNames(files.TEST)
+    def testLzs = ["\"lz1\"", "\"lz2\""]
 
     return """
 switch(ENVIRONMENT) {
@@ -123,8 +124,6 @@ switch(ENVIRONMENT) {
 }
 """.stripIndent()
 }
-
-def choices = populateChoices()
 
 properties([
     parameters([
@@ -152,46 +151,95 @@ pipeline {
     agent {
         label 'tooling'
     }
-
-    parameters {
-        string(
-            name: 'AWS_Access_Key',
-            defaultValue: '',
-            description: 'Your AWS Access Key for HIPCMSProvisionSpokeRole on CMS HUB account',
-            trim: true
-        )
-        string(
-            name: 'AWS_Secret_Key',
-            defaultValue: '',
-            description: 'Your AWS Secret Key for HIPCMSProvisionSpokeRole on CMS HUB account',
-            trim: true
-        )
-        string(
-            name: 'AWS_Access_Token',
-            defaultValue: '',
-            description: 'Your AWS Token for HIPCMSProvisionSpokeRole on CMS HUB account',
-            trim: true
-        )
-        string(
-            name: 'Release_Job',
-            defaultValue: 'test/ReleaseJob',
-            description: 'Jenkins job to call',
-        )
-        string(
-            name: 'LZ_Schedule',
-            defaultValue: '1970-01-01T00:01',
-            description: 'When to schedule patching. THIS IS IN GMT/UTC',
-            trim: true
-        )
-        choice(name: 'ENVIRONMENT', choices: "${environments}")
-    }
+    // parameters {
+    //     string(
+    //         name: 'AWS_Access_Key',
+    //         defaultValue: '',
+    //         description: 'Your AWS Access Key for HIPCMSProvisionSpokeRole on CMS HUB account',
+    //         trim: true
+    //     )
+    //     string(
+    //         name: 'AWS_Secret_Key',
+    //         defaultValue: '',
+    //         description: 'Your AWS Secret Key for HIPCMSProvisionSpokeRole on CMS HUB account',
+    //         trim: true
+    //     )
+    //     string(
+    //         name: 'AWS_Access_Token',
+    //         defaultValue: '',
+    //         description: 'Your AWS Token for HIPCMSProvisionSpokeRole on CMS HUB account',
+    //         trim: true
+    //     )
+    //     string(
+    //         name: 'Release_Job',
+    //         defaultValue: 'test/ReleaseJob',
+    //         description: 'Jenkins job to call',
+    //     )
+    //     string(
+    //         name: 'LZ_Schedule',
+    //         defaultValue: '1970-01-01T00:01',
+    //         description: 'When to schedule patching. THIS IS IN GMT/UTC',
+    //         trim: true
+    //     )
+    //     choice(name: 'ENVIRONMENT', choices: "${environments}")
+    // }
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '20'))
         timestamps()
     }
 
+
     stages {
+        stage('init') {
+            steps {
+                script {
+                    def choices = populateChoices()
+                }
+            }
+        }
+
+        stage('Parameters') {
+            steps {
+                script {
+                    properties([
+                        parameters([
+                            string(
+                                name: 'AWS_Access_Key',
+                                defaultValue: '',
+                                description: 'Your AWS Access Key for HIPCMSProvisionSpokeRole on CMS HUB account',
+                                trim: true
+                            )
+                            string(
+                                name: 'AWS_Secret_Key',
+                                defaultValue: '',
+                                description: 'Your AWS Secret Key for HIPCMSProvisionSpokeRole on CMS HUB account',
+                                trim: true
+                            )
+                            string(
+                                name: 'AWS_Access_Token',
+                                defaultValue: '',
+                                description: 'Your AWS Token for HIPCMSProvisionSpokeRole on CMS HUB account',
+                                trim: true
+                            )
+                            string(
+                                name: 'Release_Job',
+                                defaultValue: 'test/ReleaseJob',
+                                description: 'Jenkins job to call',
+                            )
+                            string(
+                                name: 'LZ_Schedule',
+                                defaultValue: '1970-01-01T00:01',
+                                description: 'When to schedule patching. THIS IS IN GMT/UTC',
+                                trim: true
+                            )
+                            choice(name: 'ENVIRONMENT', choices: "${environments}")
+                        ])
+                    ])
+                }
+            }
+        }
+
         stage('Execute patching on multiple landing zones') {
             steps {
                 script {
