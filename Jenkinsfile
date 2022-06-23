@@ -74,7 +74,7 @@ def getChosenLzsInfo(file, chosenLzs = []) {
 
 def getLzShortNames(file) {
     node {
-        sh 'ls'
+        // sh 'ls'
         String fileContents = readFile "${env.WORKSPACE}/${file}"
         lines = removeEmptyLines(fileContents)
         List accounts = []
